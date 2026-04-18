@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,35 +7,129 @@
 
   <title>AI for Busy People | Save Time with AI Agents</title>
 
-  <meta name="description" content="See exactly how much time AI agents can save you. Free interactive planner for busy people.">
+  <meta name="description" content="Find the best AI tools for your needs. Save time, reduce stress, and automate your work with AI agents.">
 
   <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
+
 <body>
+
+  <!-- ========================================= -->
+  <!-- HEADER -->
+  <!-- ========================================= -->
 
   <div id="header"></div>
 
   <main class="container">
 
-    <section style="text-align:center; margin-top:3rem;">
-      <h1 style="font-size:2.5rem; margin-bottom:1rem;">
-        See exactly what AI can take off your plate
-      </h1>
+<!-- ========================================= -->
+<!-- HERO SECTION -->
+<!-- ========================================= -->
+<section style="text-align:center; margin-top:3rem;">
+  <h1 style="font-size:2.5rem; margin-bottom:1rem;">
+    See exactly what AI can do for you
+  </h1>
 
-      <p style="color:var(--text-muted); max-width:600px; margin:0 auto 2rem;">
-        Use our free interactive planner to see how much time, money, and stress you can save with AI agents.
-      </p>
+  <p style="color:var(--text-muted); max-width:600px; margin:0 auto 2rem;">
+    Tell us what you need help with, and we’ll match you with the best AI tools for your situation.
+  </p>
+</section>
 
-      <a href="/forecaster.html" class="button button-primary">
-        Open the Forecaster
-      </a>
-    </section>
+<!-- ========================================= -->
+<!-- FULL FORECASTER / RECOMMENDER -->
+<!-- ========================================= -->
+<section style="max-width:700px; margin:2rem auto;">
+
+  <div id="recommender">
+
+    <!-- ========================================= -->
+    <!-- Q1: INTENT -->
+    <!-- ========================================= -->
+    <label for="task"><strong>What do you want AI to take off your plate?</strong></label>
+    <select id="task" style="width:100%; margin-bottom:1rem;">
+
+      <option value="writing">Write or create content</option>
+      <option value="email">Manage email and communication</option>
+      <option value="daily">Save time on daily tasks</option>
+      <option value="research">Research, search, or compare things</option>
+      <option value="organization">Organize information, notes, or knowledge</option>
+      <option value="automation">Automate workflows or tasks for me</option>
+
+      <!-- NEW OPTIONS ADDED -->
+      <option value="personal_assistant">Personal assistant / life admin</option>
+      <option value="meetings">Meetings, notes, and summaries</option>
+
+      <option value="coding">Help me code or build apps</option>
+      <option value="design">Create images or design content</option>
+      <option value="video">Create videos or edit media</option>
+      <option value="marketing">Help with marketing or growing a business</option>
+
+    </select>
+
+    <!-- ========================================= -->
+    <!-- Q2: AUTONOMY -->
+    <!-- ========================================= -->
+    <label for="control"><strong>How much control do you want AI to have?</strong></label>
+    <select id="control" style="width:100%; margin-bottom:1rem;">
+      <option value="1">I just want suggestions</option>
+      <option value="2">Help me decide</option>
+      <option value="3">Do most of the work</option>
+      <option value="4">Handle it for me</option>
+    </select>
+
+    <!-- ========================================= -->
+    <!-- Q3: COMPLEXITY / EASE -->
+    <!-- ========================================= -->
+    <label for="ease"><strong>How easy do you want your AI tools to be?</strong></label>
+    <select id="ease" style="width:100%; margin-bottom:1rem;">
+      <option value="easy">Simple and easy (works out of the box)</option>
+      <option value="medium">Learn a bit (some setup, better results)</option>
+      <option value="advanced">Invest time (more complex, most powerful)</option>
+    </select>
+
+    <!-- ========================================= -->
+    <!-- Q4: COST -->
+    <!-- ========================================= -->
+    <label for="price"><strong>Do you want only free tools?</strong></label>
+    <select id="price" style="width:100%; margin-bottom:1.5rem;">
+      <option value="">No preference</option>
+      <option value="free">Yes — only free tools</option>
+      <option value="paid">No — open to paid tools</option>
+    </select>
+
+    <!-- ========================================= -->
+    <!-- BUTTON -->
+    <!-- ========================================= -->
+    <button id="runBtn" class="button button-primary" style="width:100%;">
+      Show Recommendations
+    </button>
+
+  </div>
+
+</section>
+
+<!-- ========================================= -->
+<!-- RESULTS -->
+<!-- ========================================= -->
+<section style="max-width:700px; margin:2rem auto;">
+  <div id="results"></div>
+</section>
 
   </main>
 
+  <!-- ========================================= -->
+  <!-- FOOTER -->
+  <!-- ========================================= -->
+
   <div id="footer"></div>
 
+  <!-- EXISTING COMPONENTS -->
+
   <script src="/assets/js/components.js"></script>
+
+  <!-- IMPORTANT: RECOMMENDER APP -->
+
+  <script type="module" src="/assets/js/app.js"></script>
 
 </body>
 </html>
