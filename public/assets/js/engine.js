@@ -3,19 +3,48 @@
 // Converts user input to ranked results
 // ==========================================
 
-// WEIGHTS (tuned for your new model)
+// ==========================================
+// WEIGHTS (cleaned model)
+// ==========================================
+
 const WEIGHTS = {
-  task: 0.35,
-  control: 0.25,
-  ease: 0.15,          // ? NEW
-  constraints: 0.2,
-  bonus: 0.05
+  task: 0.4,
+  control: 0.3,
+  ease: 0.2,
+  bonus: 0.1
 };
 
+// ==========================================
 // MAIN FUNCTION
+// ==========================================
+
 export function scoreTools(user, tools) {
-  return tools.map(tool => {
+
+  // ==========================================
+  // 1. PRICE FILTER (ONLY FILTERING NOW)
+  // ==========================================
+
+  let filteredTools = tools;
+
+  // Free-only mode:
+  // keep only free + freemium tools
+  if (user.price === "free") {
+    filteredTools = tools.filter(tool =>
+      tool.price === "free" || tool.price === "freemium"
+    );
+  }
+
+  // "I don't mind paying" or empty:
+  // no filtering applied
+
+
+  // ==========================================
+  // 2. SCORE FILTERED TOOLS
+  // ==========================================
+
+  return filteredTools.map(tool => {
     const score = calculateScore(user, tool);
+
     return {
       ...tool,
       score,
@@ -25,25 +54,29 @@ export function scoreTools(user, tools) {
   .sort((a, b) => b.score - a.score);
 }
 
+// ==========================================
 // CORE SCORING FUNCTION
+// ==========================================
+
 function calculateScore(user, tool) {
 
   const taskMatch = getTaskMatch(user, tool);
   const controlMatch = getControlMatch(user, tool);
-  const easeMatch = getEaseMatch(user, tool); // ? NEW
-  const constraintsMatch = getConstraintsMatch(user, tool);
+  const easeMatch = getEaseMatch(user, tool);
   const bonus = tool.priority || 0;
 
   return (
     taskMatch * WEIGHTS.task +
     controlMatch * WEIGHTS.control +
-    easeMatch * WEIGHTS.ease +                 // ? NEW
-    constraintsMatch * WEIGHTS.constraints +
+    easeMatch * WEIGHTS.ease +
     bonus * WEIGHTS.bonus
   );
 }
 
+// ==========================================
 // TASK MATCH
+// ==========================================
+
 function getTaskMatch(user, tool) {
   if (!user.tasks || !tool.tasks) return 0;
 
@@ -51,7 +84,10 @@ function getTaskMatch(user, tool) {
   return matches.length / user.tasks.length;
 }
 
+// ==========================================
 // CONTROL MATCH
+// ==========================================
+
 function getControlMatch(user, tool) {
   const min = 1;
   const max = 4;
@@ -62,21 +98,8 @@ function getControlMatch(user, tool) {
   return 1 - (distance / maxDistance);
 }
 
-// CONSTRAINT MATCH
-function getConstraintsMatch(user, tool) {
-  let score = 0;
-  let total = 0;
-
-  if (user.price) {
-    total++;
-    if (user.price === tool.price) score++;
-  }
-
-  return total > 0 ? score / total : 1;
-}
-
 // ==========================================
-// NEW: EASE MATCH (KEY ADDITION)
+// EASE MATCH
 // ==========================================
 
 function getEaseMatch(user, tool) {
@@ -90,5 +113,5 @@ function getEaseMatch(user, tool) {
 
   const diff = Math.abs(levels[user.ease] - levels[tool.ease]);
 
-  return 1 - (diff / 2); // normalized 0–1
+  return 1 - (diff / 2);
 }
