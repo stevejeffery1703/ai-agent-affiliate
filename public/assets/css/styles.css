@@ -111,3 +111,12 @@ body {
   background: #4CAF50;
   border-radius: 5px;
 }
+
+/* === PAID UPGRADE RESULT BOX === */
+.upgrade-box {
+  border: 2px solid var(--primary);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+  background: rgba(0,0,0,0.02);
+}

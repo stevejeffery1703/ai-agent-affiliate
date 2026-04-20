@@ -17,33 +17,74 @@ function runRecommendation() {
 
   const user = {
     tasks: [document.getElementById("task").value],
-
     control: parseInt(document.getElementById("control").value),
-
     price: document.getElementById("price").value,
-
-    ease: document.getElementById("ease").value // ? UPDATED (was skill)
+    ease: document.getElementById("ease").value
   };
 
   // ============================
-  // 2. SCORE TOOLS
+  // 2. RUN ENGINE (FREE MODE)
   // ============================
 
-  const results = scoreTools(user, TOOLS).slice(0, 5);
+  const freeResults = scoreTools(
+    { ...user, price: "free" },
+    TOOLS
+  );
 
   // ============================
-  // 3. RENDER RESULTS
+  // 3. RUN ENGINE (ALL TOOLS)
   // ============================
 
-  renderResults(results);
+  const allResults = scoreTools(
+    { ...user, price: "all" },
+    TOOLS
+  );
+
+  // ============================
+  // 4. MAIN RESULTS (RESPECT USER CHOICE)
+  // ============================
+
+  let mainResults;
+
+  if (user.price === "free") {
+    mainResults = freeResults.slice(0, 5);
+  } else {
+    mainResults = allResults.slice(0, 5);
+  }
+
+  renderResults(mainResults, "results");
+
+  // ============================
+  // 5. UPGRADE BLOCK (ONLY IF FREE SELECTED)
+  // ============================
+
+  if (user.price === "free") {
+
+    const freeIds = new Set(freeResults.map(t => t.id));
+
+    const paidOnly = allResults.filter(tool =>
+      !freeIds.has(tool.id) && tool.price === "paid"
+    );
+
+    const upgradeResults = paidOnly.slice(0, 3);
+
+    renderUpgradeResults(upgradeResults, freeResults);
+
+  } else {
+    // clear upgrade section if not needed
+    document.getElementById("upgrade-results").innerHTML = "";
+  }
 }
+
 
 // ==========================================
 // RENDER FUNCTION
 // ==========================================
 
-function renderResults(results) {
-  const container = document.getElementById("results");
+// Render results
+
+function renderResults(results, containerId = "results") {
+  const container = document.getElementById(containerId);
   container.innerHTML = "";
 
   results.forEach(tool => {
@@ -71,6 +112,62 @@ function renderResults(results) {
 
     container.appendChild(el);
   });
+}
+
+// Render paid upgrade results
+
+function renderUpgradeResults(results, freeResults) {
+
+  const container = document.getElementById("upgrade-results");
+  container.innerHTML = "";
+
+  if (!results.length) return;
+
+  const bestFree = freeResults[0]?.percentage || 0;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "upgrade-box";
+
+  wrapper.innerHTML = `
+    <h2 style="margin-bottom:0.5rem;">
+      Want better results?
+    </h2>
+    <p style="margin-bottom:1.5rem; color:var(--text-muted);">
+      If you're open to paid tools, you could get significantly better matches.
+      Your best free result was <strong>${bestFree}%</strong>.
+    </p>
+  `;
+
+  results.forEach(tool => {
+
+    const gain = tool.percentage - bestFree;
+
+    const el = document.createElement("div");
+    el.className = "result-card";
+
+    el.innerHTML = `
+      <h3>${tool.name}</h3>
+
+      <div class="score-bar">
+        <div class="score-fill" style="width:${tool.percentage}%"></div>
+      </div>
+
+      <p>
+        <strong>${tool.percentage}% match</strong>
+        ${gain > 0 ? `(+${gain}% better)` : ""}
+      </p>
+
+      <p>${tool.description}</p>
+
+      <a href="${tool.url}" target="_blank" class="button button-primary">
+        Try ${tool.name}
+      </a>
+    `;
+
+    wrapper.appendChild(el);
+  });
+
+  container.appendChild(wrapper);
 }
 
 // LABELS
