@@ -1,17 +1,17 @@
 // ==========================================
 // SCORING ENGINE
-// Converts user input to ranked results
+// Matrix-based capability model
 // ==========================================
 
 // ==========================================
-// WEIGHTS (cleaned model)
+// WEIGHTS (UPDATED MODEL)
 // ==========================================
 
 const WEIGHTS = {
-  task: 0.4,
-  control: 0.3,
-  ease: 0.2,
-  bonus: 0.1
+  task: 0.45,
+  capability: 0.35,   // replaced "control"
+  ease: 0.15,
+  bonus: 0.05
 };
 
 // ==========================================
@@ -20,29 +20,37 @@ const WEIGHTS = {
 
 export function scoreTools(user, tools) {
 
+let filteredTools = tools;
+
+// ==========================================
+// 1. PRICE FILTER
+// ==========================================
+
+if (user.price === "free") {
+  filteredTools = filteredTools.filter(tool =>
+    tool.price === "free" || tool.price === "freemium"
+  );
+}
+
+// ==========================================
+// 2. TASK ELIGIBILITY GATE (NEW - IMPORTANT)
+// ==========================================
+// Remove tools that cannot perform selected task at all
+
+const selectedTask = user.tasks?.[0];
+
+if (selectedTask) {
+  filteredTools = filteredTools.filter(tool =>
+    tool.capability?.[selectedTask] !== undefined
+  );
+}
+
   // ==========================================
-  // 1. PRICE FILTER (ONLY FILTERING NOW)
-  // ==========================================
-
-  let filteredTools = tools;
-
-  // Free-only mode:
-  // keep only free + freemium tools
-  if (user.price === "free") {
-    filteredTools = tools.filter(tool =>
-      tool.price === "free" || tool.price === "freemium"
-    );
-  }
-
-  // "I don't mind paying" or empty:
-  // no filtering applied
-
-
-  // ==========================================
-  // 2. SCORE FILTERED TOOLS
+  // 3. SCORE
   // ==========================================
 
   return filteredTools.map(tool => {
+
     const score = calculateScore(user, tool);
 
     return {
@@ -61,20 +69,20 @@ export function scoreTools(user, tools) {
 function calculateScore(user, tool) {
 
   const taskMatch = getTaskMatch(user, tool);
-  const controlMatch = getControlMatch(user, tool);
+  const capabilityMatch = getCapabilityMatch(user, tool);
   const easeMatch = getEaseMatch(user, tool);
   const bonus = tool.priority || 0;
 
   return (
     taskMatch * WEIGHTS.task +
-    controlMatch * WEIGHTS.control +
+    capabilityMatch * WEIGHTS.capability +
     easeMatch * WEIGHTS.ease +
     bonus * WEIGHTS.bonus
   );
 }
 
 // ==========================================
-// TASK MATCH
+// TASK MATCH (UNCHANGED)
 // ==========================================
 
 function getTaskMatch(user, tool) {
@@ -85,21 +93,27 @@ function getTaskMatch(user, tool) {
 }
 
 // ==========================================
-// CONTROL MATCH
+// CAPABILITY MATCH (NEW CORE LOGIC)
 // ==========================================
 
-function getControlMatch(user, tool) {
-  const min = 1;
-  const max = 4;
+function getCapabilityMatch(user, tool) {
 
-  const distance = Math.abs(user.control - tool.control);
-  const maxDistance = max - min;
+  const task = user.tasks?.[0];
+  const level = user.control;
 
-  return 1 - (distance / maxDistance);
+  if (!task || !level) return 0;
+
+  const taskCapability = tool.capability?.[task];
+
+  if (!taskCapability) return 0;
+
+  const score = taskCapability[level];
+
+  return typeof score === "number" ? score : 0;
 }
 
 // ==========================================
-// EASE MATCH
+// EASE MATCH (UNCHANGED)
 // ==========================================
 
 function getEaseMatch(user, tool) {
@@ -115,3 +129,5 @@ function getEaseMatch(user, tool) {
 
   return 1 - (diff / 2);
 }
+
+

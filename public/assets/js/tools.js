@@ -4,43 +4,79 @@
 // ==========================================
 
 export const TOOLS = [
+
+// ===============
+// === CHATGPT ===
+// ===============
   {
     id: "chatgpt",
     name: "ChatGPT",
-    url: "https://chat.openai.com", // <-- replace with affiliate link later
-
+    url: "https://chat.openai.com", // <-- replace with affiliate link
+    
     // CORE MATCHING TAGS
-    tasks: ["writing", "research", "general"],
-    control: 1, // 1 = advise, 4 = fully autonomous
+    tasks: ["writing", "research", "coding", "email"],
 
+    // CAPABILITY MATRIX
+    // Include one line for each core matching tag
+    // 1: I just want suggestions, 2: Help me decide, 3: Do most of the work, 4: Handle it for me 
+    capability: {
+      writing: {
+        1: 0.95, 2: 0.95, 3: 0.9, 4: 0.7
+      },
+
+      research: {
+        1: 0.9, 2: 0.9, 3: 0.8, 4: 0.6
+      },
+
+      coding: {
+        1: 0.9, 2: 0.85, 3: 0.8, 4: 0.6
+      },
+
+      email: {
+        1: 0.7, 2: 0.6, 3: 0.4, 4: 0.1
+      }
+    },
+    
     // CONSTRAINTS
-    price: "freemium",
     ease: "easy",
+    price: "freemium",
 
-    // BUSINESS
-    priority: 0.7, // monetization boost (0–1)
-
+    // BUSINESS MONETIZATION BOOST (0-1)
+    priority: 0.7,
+   
     // DISPLAY
-    description: "Great all-round AI for writing, research, and everyday tasks."
+    description: "Great all-round AI assistant."
   },
 
+
+// ==================
+// === SUPERHUMAN ===
+// ==================
   {
     id: "superhuman",
     name: "Superhuman",
-    url: "https://superhuman.com",
+    url: "https://superhuman.com", // <-- replace with affiliate link
 
     // CORE MATCHING TAGS
-    tasks: ["email", "productivity"],
-    control: 3,
+    tasks: ["email"],
+
+    // CAPABILITY MATRIX
+    // Include one line for each core matching tag
+    // 1: I just want suggestions, 2: Help me decide, 3: Do most of the work, 4: Handle it for me 
+    capability: {
+      email: {
+        1: 0.9, 2: 0.9, 3: 0.8, 4: 0.6
+      }
+    },
 
     // CONSTRAINTS
-    price: "paid",
     ease: "medium",
+    price: "paid",
 
-    // BUSINESS
+    // BUSINESS MONETIZATION BOOST (0-1)
     priority: 0.9,
 
     // DISPLAY
-    description: "High-speed email workflow tool for professionals."
+    description: "High-speed email workflow tool."
   }
 ];
