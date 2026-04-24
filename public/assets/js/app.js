@@ -52,7 +52,7 @@ function runRecommendation() {
     mainResults = allResults.slice(0, 5);
   }
 
-  renderResults(mainResults, "results");
+  renderResults(mainResults, user, "results");
 
   // ============================
   // 5. UPGRADE BLOCK (ONLY IF FREE SELECTED)
@@ -83,19 +83,39 @@ function runRecommendation() {
 
 // Render results
 
-function renderResults(results, containerId = "results") {
+function renderResults(results, user, containerId = "results") {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
 
-  results.forEach(tool => {
+  results.forEach((tool, index) => {
 
     const label = getLabel(tool.percentage);
 
     const el = document.createElement("div");
     el.className = "result-card";
 
+    // Highlight top result
+    if (index === 0) {
+      el.classList.add("featured");
+    }
+
+    // Features
+    const featuresHTML = tool.features
+      ?.map(f => `<li>${f}</li>`)
+      .join("") || "";
+
+    // Badges
+    const badgesHTML = tool.badges
+      ?.map(b => `<span class="badge">${b}</span>`)
+      .join("") || "";
+
+    const why = getWhyText(user, tool);
+
     el.innerHTML = `
-      <h3>${tool.name}</h3>
+      <div class="card-header">
+        <img src="${tool.logo}" alt="${tool.name} logo" class="tool-logo">
+        <h3>${tool.name}</h3>
+      </div>
 
       <div class="score-bar">
         <div class="score-fill" style="width:${tool.percentage}%"></div>
@@ -103,7 +123,16 @@ function renderResults(results, containerId = "results") {
 
       <p><strong>${tool.percentage}% match</strong> — ${label}</p>
 
-      <p>${tool.description}</p>
+      <p class="tagline">${tool.tagline}</p>
+      <p class="why-title"><strong>Why this fits you:</strong></p>
+       <ul class="why-list">${why.map(r => `<li>${r}</li>`).join("")}</ul>
+      <p class="best-for">${tool.bestFor}</p>
+
+      <ul class="features">
+        ${featuresHTML}
+      </ul>
+
+      ${badgesHTML ? `<div class="badges">${badgesHTML}</div>` : ""}
 
       <a href="${tool.url}" target="_blank" class="button button-primary">
         Try ${tool.name}
@@ -144,25 +173,29 @@ function renderUpgradeResults(results, freeResults) {
 
     const el = document.createElement("div");
     el.className = "result-card";
-
+  
     el.innerHTML = `
-      <h3>${tool.name}</h3>
+  <div class="card-header">
+    <img src="${tool.logo}" alt="${tool.name} logo" class="tool-logo">
+    <h3>${tool.name}</h3>
+  </div>
 
-      <div class="score-bar">
-        <div class="score-fill" style="width:${tool.percentage}%"></div>
-      </div>
+  <div class="score-bar">
+    <div class="score-fill" style="width:${tool.percentage}%"></div>
+  </div>
 
-      <p>
-        <strong>${tool.percentage}% match</strong>
-        ${gain > 0 ? `(+${gain}% better)` : ""}
-      </p>
+  <p>
+    <strong>${tool.percentage}% match</strong>
+    ${gain > 0 ? `(+${gain}% better)` : ""}
+  </p>
 
-      <p>${tool.description}</p>
+  <p class="tagline">${tool.tagline}</p>
+  <p class="best-for">${tool.bestFor}</p>
 
-      <a href="${tool.url}" target="_blank" class="button button-primary">
-        Try ${tool.name}
-      </a>
-    `;
+  <a href="${tool.url}" target="_blank" class="button button-primary">
+    Try ${tool.name}
+  </a>
+`;
 
     wrapper.appendChild(el);
   });
@@ -170,7 +203,59 @@ function renderUpgradeResults(results, freeResults) {
   container.appendChild(wrapper);
 }
 
+
+// ==========================================
+// WHY TEXT
+// ==========================================
+
+function getWhyText(user, tool) {
+
+  const task = user.tasks?.[0];
+  const level = user.control;
+
+  const parts = [];
+
+  // === TASK MATCH ===
+  if (task && tool.capability?.[task]) {
+    parts.push(`Strong match for ${task} tasks`);
+  }
+
+  // === EASE MATCH ===
+  if (user.ease && tool.ease) {
+    if (user.ease === tool.ease) {
+      if (tool.ease === "easy") {
+        parts.push("Very easy to get started with");
+      } else if (tool.ease === "medium") {
+        parts.push("Balanced between power and ease of use");
+      } else {
+        parts.push("Powerful with advanced capabilities");
+      }
+    }
+  }
+
+  // === CAPABILITY LEVEL ===
+  if (task && level && tool.capability?.[task]) {
+    const score = tool.capability[task][level];
+
+    if (score >= 0.85) {
+      parts.push("Handles this task extremely well");
+    } else if (score >= 0.7) {
+      parts.push("Reliably performs this task");
+    }
+  }
+
+  // === FALLBACK ===
+  if (parts.length === 0) {
+    return "A solid option based on your preferences.";
+  }
+
+  return parts.length ? parts : ["A solid option based on your preferences."];
+}
+
+
+// ==========================================
 // LABELS
+// ==========================================
 function getLabel(score) {
   if (score >= 90) return "Excellent fit";
   if (score >= 75) return "Great match";

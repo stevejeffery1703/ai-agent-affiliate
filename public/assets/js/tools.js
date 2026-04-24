@@ -44,8 +44,22 @@ export const TOOLS = [
     // BUSINESS MONETIZATION BOOST (0-1)
     priority: 0.7,
    
-    // DISPLAY
-    description: "Great all-round AI assistant."
+    // DISPLAY DATA
+    logo: "/assets/logos/chatgpt.png",
+
+    tagline: "Your all-purpose AI assistant",
+
+    bestFor: "Best for writing, research, and everyday AI help",
+
+    features: [
+      "Writes and edits content quickly",
+      "Answers complex questions clearly",
+      "Helps with coding and problem-solving"
+    ],
+
+    badges: ["Popular", "Beginner-friendly"],
+
+    accentColor: "#10a37f"
   },
 
 
@@ -76,7 +90,21 @@ export const TOOLS = [
     // BUSINESS MONETIZATION BOOST (0-1)
     priority: 0.9,
 
-    // DISPLAY
-    description: "High-speed email workflow tool."
+    // DISPLAY DATA
+    logo: "/assets/logos/superhuman.png",
+
+    tagline: "The fastest email experience ever made",
+
+    bestFor: "Best for high-volume email users",
+
+    features: [
+      "Blazing-fast keyboard-driven workflow",
+      "AI-assisted email writing",
+      "Designed for inbox zero"
+    ],
+
+    badges: ["Premium"],
+
+    accentColor: "#000000"
   }
 ];
