@@ -249,7 +249,9 @@ function getWhyText(user, tool) {
     return "A solid option based on your preferences.";
   }
 
-  return parts.length ? parts : ["A solid option based on your preferences."];
+  return parts.length > 0
+  ? parts
+  : ["A solid option based on your preferences."];
 }
 
 
