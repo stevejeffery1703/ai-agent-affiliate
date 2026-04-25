@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -14,130 +13,122 @@
 
 <body>
 
-  <!-- ========================================= -->
-  <!-- HEADER -->
-  <!-- ========================================= -->
-
   <div id="header"></div>
 
   <main class="container">
 
-<!-- ========================================= -->
-<!-- HERO SECTION -->
-<!-- ========================================= -->
-<section style="text-align:center; margin-top:3rem;">
-  <h1 style="font-size:2.5rem; margin-bottom:1rem;">
-    See exactly what AI can do for you
-  </h1>
+    <!-- HERO (keep narrow for readability) -->
+    <section class="section hero">
+      <div class="section-center">
+        <h1 class="hero-title">See exactly what AI can do for you</h1>
+        <p class="hero-subtitle">
+          Tell us what you need help with, and we’ll match you with the best AI tools for your situation.
+        </p>
+      </div>
+    </section>
 
-  <p style="color:var(--text-muted); max-width:600px; margin:0 auto 2rem;">
-    Tell us what you need help with, and we’ll match you with the best AI tools for your situation.
-  </p>
-</section>
+    <!-- RECOMMENDER (WIDE) -->
+    <section class="section">
+      <div class="section-wide">
 
-<!-- ========================================= -->
-<!-- FULL FORECASTER / RECOMMENDER -->
-<!-- ========================================= -->
-<section style="max-width:700px; margin:2rem auto;">
+        <div id="recommender" class="card recommender-card">
 
-  <div id="recommender">
+          <!-- Q1 ICON GRID -->
+          <div class="form-group">
+            <label class="form-label"><strong>What do you want AI to take off your plate?</strong></label>
 
-    <!-- ========================================= -->
-    <!-- Q1: INTENT -->
-    <!-- ========================================= -->
-    <label for="task"><strong>What do you want AI to take off your plate?</strong></label>
-    <select id="task" style="width:100%; margin-bottom:1rem;">
+            <div class="icon-grid" id="task">
 
-      <option value="writing">Write or create content</option>
-      <option value="email">Manage email and communication</option>
-      <option value="daily">Save time on daily tasks</option>
-      <option value="research">Research, search, or compare things</option>
-      <option value="organization">Organize information, notes, or knowledge</option>
-      <option value="automation">Automate workflows or tasks for me</option>
+              <button class="icon-option active" data-value="writing">✍️<span>Content</span></button>
+              <button class="icon-option" data-value="email">📧<span>Email</span></button>
+              <button class="icon-option" data-value="daily">⏱️<span>Tasks</span></button>
+              <button class="icon-option" data-value="research">🔍<span>Research</span></button>
+              <button class="icon-option" data-value="organization">🧠<span>Organize</span></button>
+              <button class="icon-option" data-value="automation">⚙️<span>Automation</span></button>
+              <button class="icon-option" data-value="personal_assistant">🗂️<span>Life Admin</span></button>
+              <button class="icon-option" data-value="meetings">📝<span>Meetings</span></button>
+              <button class="icon-option" data-value="coding">💻<span>Coding</span></button>
+              <button class="icon-option" data-value="design">🎨<span>Design</span></button>
+              <button class="icon-option" data-value="video">🎬<span>Video</span></button>
+              <button class="icon-option" data-value="marketing">📈<span>Marketing</span></button>
 
-      <!-- NEW OPTIONS ADDED -->
-      <option value="personal_assistant">Personal assistant / life admin</option>
-      <option value="meetings">Meetings, notes, and summaries</option>
+            </div>
+          </div>
 
-      <option value="coding">Help me code or build apps</option>
-      <option value="design">Create images or design content</option>
-      <option value="video">Create videos or edit media</option>
-      <option value="marketing">Help with marketing or growing a business</option>
+<!-- Q2 SLIDER -->
+<div class="form-group">
+  <label class="form-label">
+    <strong>How much control do you want AI to have?</strong>
+  </label>
 
-    </select>
-
-    <!-- ========================================= -->
-    <!-- Q2: AUTONOMY -->
-    <!-- ========================================= -->
-    <label for="control"><strong>How much control do you want AI to have?</strong></label>
-    <select id="control" style="width:100%; margin-bottom:1rem;">
-      <option value="1">I just want suggestions</option>
-      <option value="2">Help me decide</option>
-      <option value="3">Do most of the work</option>
-      <option value="4">Handle it for me</option>
-    </select>
-
-    <!-- ========================================= -->
-    <!-- Q3: COMPLEXITY / EASE -->
-    <!-- ========================================= -->
-    <label for="ease"><strong>How easy do you want your AI tools to be?</strong></label>
-    <select id="ease" style="width:100%; margin-bottom:1rem;">
-      <option value="easy">Simple and easy (works out of the box)</option>
-      <option value="medium">Learn a bit (some setup, better results)</option>
-      <option value="advanced">Invest time (more complex, most powerful)</option>
-    </select>
-
-    
-    <!-- ========================================= -->
-    <!-- Q4: PRICE FILTER -->
-    <!-- ========================================= -->
-    <label for="price"><strong>Do you want only free tools?</strong></label>
-    <select id="price" style="width:100%; margin-bottom:1.5rem;">
-     <option value="all">No — show me the best tools (free + paid)</option>
-     <option value="free">Yes — only free tools</option>
-    </select>
-    
-
-    <!-- ========================================= -->
-    <!-- BUTTON -->
-    <!-- ========================================= -->
-    <button id="runBtn" class="button button-primary" style="width:100%;">
-      Show Recommendations
-    </button>
-
+  <div class="slider-group">
+    <span>Suggestions</span>
+    <input type="range" id="control" min="1" max="4" step="1" value="2">
+    <span>Fully done</span>
   </div>
 
-</section>
+  <div id="control-label" class="slider-label">
+    Help me decide
+  </div>
+</div>
 
-<!-- ========================================= -->
-<!-- RESULTS -->
-<!-- ========================================= -->
-<section style="max-width:700px; margin:2rem auto;">
-  <div id="results"></div>
-</section>
 
-<!-- ========================================= -->
-<!-- PAID UPGRADE RESULTS -->
-<!-- ========================================= -->
-<section style="max-width:700px; margin:2rem auto;">
-  <div id="upgrade-results"></div>
-</section>
+<!-- Q3 SLIDER -->
+<div class="form-group">
+  <label class="form-label">
+    <strong>How easy do you want your AI tools to be?</strong>
+  </label>
 
+  <div class="slider-group">
+    <span>Simple</span>
+    <input type="range" id="ease" min="1" max="3" step="1" value="1">
+    <span>Powerful</span>
+  </div>
+
+  <div id="ease-label" class="slider-label">
+    Simple and easy (works out of the box)
+  </div>
+</div>
+          <!-- Q4 TOGGLE -->
+          <div class="form-group">
+            <label class="form-label"><strong>Only show free tools?</strong></label>
+
+            <label class="toggle">
+              <input type="checkbox" id="price">
+              <span class="toggle-slider"></span>
+            </label>
+
+            <small class="toggle-hint">Off = include paid tools</small>
+          </div>
+
+          <button id="runBtn" class="button button-primary button-full">
+            Show Recommendations
+          </button>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RESULTS (WIDE — IMPORTANT) -->
+    <section class="section">
+      <div class="section-wide">
+        <div id="results"></div>
+      </div>
+    </section>
+
+    <!-- UPGRADE -->
+    <section class="section">
+      <div class="section-wide">
+        <div id="upgrade-results"></div>
+      </div>
+    </section>
 
   </main>
 
-  <!-- ========================================= -->
-  <!-- FOOTER -->
-  <!-- ========================================= -->
-
   <div id="footer"></div>
 
-  <!-- EXISTING COMPONENTS -->
-
   <script src="/assets/js/components.js"></script>
-
-  <!-- IMPORTANT: RECOMMENDER APP -->
-
   <script type="module" src="/assets/js/app.js"></script>
 
 </body>

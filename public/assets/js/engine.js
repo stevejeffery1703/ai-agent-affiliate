@@ -107,7 +107,7 @@ function getCapabilityMatch(user, tool) {
 
   if (!taskCapability) return 0;
 
-  const score = taskCapability[level];
+  const score = taskCapability[String(level)];
 
   return typeof score === "number" ? score : 0;
 }
@@ -127,7 +127,7 @@ function getEaseMatch(user, tool) {
 
   const diff = Math.abs(levels[user.ease] - levels[tool.ease]);
 
-  return 1 - (diff / 2);
+  return Math.max(0, 1 - (diff / 2));
 }
 
 

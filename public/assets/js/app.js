@@ -6,6 +6,60 @@
 import { TOOLS } from './tools.js';
 import { scoreTools } from './engine.js';
 
+// ==========================================
+// ICON GRID SELECTION (Q1 UI)
+// ==========================================
+
+const iconOptions = document.querySelectorAll(".icon-option");
+
+iconOptions.forEach(btn => {
+  btn.addEventListener("click", () => {
+
+    // single-select behaviour
+    iconOptions.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+  });
+});
+
+
+// ==========================================
+// SLIDER LABELS (UI TEXT)
+// ==========================================
+
+const controlLabels = {
+  1: "I just want suggestions",
+  2: "Help me decide",
+  3: "Do most of the work",
+  4: "Handle it for me"
+};
+
+const easeLabels = {
+  1: "Simple and easy (works out of the box)",
+  2: "Learn a bit (some setup, better results)",
+  3: "Invest time (more complex; most powerful)"
+};
+
+const controlSlider = document.getElementById("control");
+const easeSlider = document.getElementById("ease");
+
+const controlLabel = document.getElementById("control-label");
+const easeLabel = document.getElementById("ease-label");
+
+// Set initial values
+controlLabel.textContent = controlLabels[controlSlider.value];
+easeLabel.textContent = easeLabels[easeSlider.value];
+
+// Update on change
+controlSlider.addEventListener("input", () => {
+  controlLabel.textContent = controlLabels[controlSlider.value];
+});
+
+easeSlider.addEventListener("input", () => {
+  easeLabel.textContent = easeLabels[easeSlider.value];
+});
+
+
 // RUN WHEN BUTTON CLICKED
 document.getElementById("runBtn").addEventListener("click", runRecommendation);
 
@@ -15,12 +69,13 @@ function runRecommendation() {
   // 1. COLLECT USER INPUT
   // ============================
 
-  const user = {
-    tasks: [document.getElementById("task").value],
-    control: parseInt(document.getElementById("control").value),
-    price: document.getElementById("price").value,
-    ease: document.getElementById("ease").value
-  };
+const user = {
+  tasks: [document.querySelector(".icon-option.active").dataset.value],
+  control: mapControl(document.getElementById("control").value),
+  ease: mapEase(document.getElementById("ease").value),
+  price: document.getElementById("price").checked ? "free" : "all"
+};
+  
 
   // ============================
   // 2. RUN ENGINE (FREE MODE)
@@ -47,12 +102,18 @@ function runRecommendation() {
   let mainResults;
 
   if (user.price === "free") {
-    mainResults = freeResults.slice(0, 5);
+    mainResults = freeResults.slice(0, 4);
   } else {
-    mainResults = allResults.slice(0, 5);
+    mainResults = allResults.slice(0, 4);
   }
-
   renderResults(mainResults, user, "results");
+  
+// ==========================================
+// SCROLL TO RESULTS AFTER GENERATION
+// ==========================================
+
+  document.getElementById("results")
+  .scrollIntoView({ behavior: "smooth", block: "start" });
 
   // ============================
   // 5. UPGRADE BLOCK (ONLY IF FREE SELECTED)
@@ -86,6 +147,10 @@ function runRecommendation() {
 function renderResults(results, user, containerId = "results") {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
+
+  // ? CREATE GRID WRAPPER
+  const grid = document.createElement("div");
+  grid.className = "results-grid";
 
   results.forEach((tool, index) => {
 
@@ -125,7 +190,8 @@ function renderResults(results, user, containerId = "results") {
 
       <p class="tagline">${tool.tagline}</p>
       <p class="why-title"><strong>Why this fits you:</strong></p>
-       <ul class="why-list">${why.map(r => `<li>${r}</li>`).join("")}</ul>
+      <ul class="why-list">${why.map(r => `<li>${r}</li>`).join("")}</ul>
+
       <p class="best-for">${tool.bestFor}</p>
 
       <ul class="features">
@@ -139,8 +205,12 @@ function renderResults(results, user, containerId = "results") {
       </a>
     `;
 
-    container.appendChild(el);
+    // ? ADD TO GRID (NOT container)
+    grid.appendChild(el);
   });
+
+  // ? ADD GRID TO CONTAINER
+  container.appendChild(grid);
 }
 
 // Render paid upgrade results
@@ -156,6 +226,10 @@ function renderUpgradeResults(results, freeResults) {
 
   const wrapper = document.createElement("div");
   wrapper.className = "upgrade-box";
+  
+  // ? CREATE GRID FOR UPGRADE CARDS
+const grid = document.createElement("div");
+grid.className = "results-grid";
 
   wrapper.innerHTML = `
     <h2 style="margin-bottom:0.5rem;">
@@ -197,9 +271,10 @@ function renderUpgradeResults(results, freeResults) {
   </a>
 `;
 
-    wrapper.appendChild(el);
+    grid.appendChild(el);
   });
 
+  wrapper.appendChild(grid);
   container.appendChild(wrapper);
 }
 
@@ -235,7 +310,7 @@ function getWhyText(user, tool) {
 
   // === CAPABILITY LEVEL ===
   if (task && level && tool.capability?.[task]) {
-    const score = tool.capability[task][level];
+    const score = tool.capability?.[task]?.[level];
 
     if (score >= 0.85) {
       parts.push("Handles this task extremely well");
@@ -263,4 +338,31 @@ function getLabel(score) {
   if (score >= 75) return "Great match";
   if (score >= 60) return "Good option";
   return "Less ideal";
+}
+
+
+// ==========================================
+// MAPPING FUNCTIONS
+// ==========================================
+
+function mapControl(value) {
+  // 1–4 already matches engine conceptually, but we normalize
+  const map = {
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4
+  };
+
+  return map[value] || 2;
+}
+
+function mapEase(value) {
+  const map = {
+    "1": "easy",
+    "2": "medium",
+    "3": "advanced"
+  };
+
+  return map[value] || "easy";
 }
