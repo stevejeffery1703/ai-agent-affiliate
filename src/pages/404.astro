@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found | AgentLife">
+  <main class="container">
+    <section class="notfound">
+      <h1>404</h1>
+      <p class="muted">We couldn't find that page.</p>
+      <a href="/" class="button button-primary">Back to home</a>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .notfound {
+    text-align: center;
+    margin-top: 4rem;
+  }
+  .notfound h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+  .muted {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+</style>

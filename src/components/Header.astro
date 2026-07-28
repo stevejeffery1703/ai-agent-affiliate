@@ -1,0 +1,50 @@
+---
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/forecaster', label: 'Forecaster' },
+  { href: '/tools', label: 'Tools' },
+];
+const path = Astro.url.pathname;
+---
+
+<header class="container site-header">
+  <a href="/" class="brand">AgentLife</a>
+  <nav class="nav">
+    {
+      links.map((link) => (
+        <a
+          href={link.href}
+          class="button button-secondary"
+          aria-current={path === link.href ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .brand {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .nav a[aria-current='page'] {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+</style>

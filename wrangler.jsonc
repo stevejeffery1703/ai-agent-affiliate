@@ -3,10 +3,10 @@
 
   "name": "ai-agent-affiliate",
   "compatibility_date": "2026-04-11",
-  "compatibility_flags": ["nodejs_compat"],
 
+  // Astro builds the static site into ./dist; Cloudflare serves it as assets.
   "assets": {
-    "directory": ".",
+    "directory": "./dist",
     "not_found_handling": "404-page"
   }
 }
