@@ -4,7 +4,7 @@ category: automation
 capability:
   automation: { strength: strong, autonomy: auto }
 ease: medium
-pricing: { model: paid, startingPrice: "From ~$50/mo" }
+pricing: paid
 websiteUrl: "https://www.lindy.ai"
 accentColor: "#6366f1"
 tagline: "AI agents that do the work for you"

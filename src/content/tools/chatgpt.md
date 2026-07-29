@@ -7,7 +7,7 @@ capability:
   coding: { strength: strong, autonomy: most }
   email: { strength: solid, autonomy: assist }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; Plus $20/mo" }
+pricing: freemium
 websiteUrl: "https://chatgpt.com"
 logo: "/assets/logos/chatgpt.png"
 accentColor: "#10a37f"
@@ -27,4 +27,4 @@ sources:
 
 The default choice for most people. ChatGPT handles writing, research, coding,
 and quick email drafts in one place — a strong free tier, with the latest models
-and higher limits on the $20/mo Plus plan.
+and higher limits on the paid Plus plan.

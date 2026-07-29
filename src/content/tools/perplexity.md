@@ -5,7 +5,7 @@ capability:
   research: { strength: best, autonomy: most }
   writing: { strength: solid, autonomy: assist }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; Pro $20/mo" }
+pricing: freemium
 websiteUrl: "https://www.perplexity.ai"
 accentColor: "#20808d"
 tagline: "The answer engine for cited, real-time research"
@@ -24,4 +24,4 @@ sources:
 
 When you need answers you can trust and cite, Perplexity is the pick. It searches
 the live web and returns sourced answers, with Deep Research reports for bigger
-questions. Free to use, or $20/mo Pro for more Deep Research runs and better models.
+questions. Free to use, or Pro for more Deep Research runs and better models.

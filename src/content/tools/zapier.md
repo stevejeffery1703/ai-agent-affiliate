@@ -4,7 +4,7 @@ category: automation
 capability:
   automation: { strength: best, autonomy: most }
 ease: medium
-pricing: { model: freemium, startingPrice: "Free; Pro from ~$30/mo" }
+pricing: freemium
 websiteUrl: "https://zapier.com"
 accentColor: "#ff4f00"
 tagline: "Connect your apps and automate the busywork"

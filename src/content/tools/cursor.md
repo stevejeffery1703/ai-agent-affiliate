@@ -4,7 +4,7 @@ category: coding
 capability:
   coding: { strength: best, autonomy: most }
 ease: medium
-pricing: { model: freemium, startingPrice: "Free; Pro $20/mo" }
+pricing: freemium
 websiteUrl: "https://cursor.com"
 accentColor: "#000000"
 tagline: "The AI code editor developers love"
@@ -23,4 +23,4 @@ sources:
 
 Cursor is the day-to-day favorite among developers who want AI woven into their
 editor — fast completions plus an agent that can make coordinated edits across
-files. Free to try, $20/mo for the full experience.
+files. Free to try, with a paid plan for the full experience.

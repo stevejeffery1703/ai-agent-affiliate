@@ -4,7 +4,7 @@ category: scheduling
 capability:
   scheduling: { strength: strong, autonomy: most }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; paid ~$8-12/mo" }
+pricing: freemium
 websiteUrl: "https://reclaim.ai"
 accentColor: "#4f46e5"
 tagline: "Defend your focus time automatically"

@@ -4,7 +4,7 @@ category: presentations
 capability:
   presentations: { strength: best, autonomy: most }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; Plus from $9/mo" }
+pricing: freemium
 websiteUrl: "https://gamma.app"
 accentColor: "#8b5cf6"
 tagline: "Make a polished deck from a prompt"
@@ -23,4 +23,4 @@ sources:
 
 Describe your topic and Gamma returns a complete, good-looking deck in about 30
 seconds — the fastest first draft of any presentation tool. The free tier adds a
-small badge; $9/mo removes it. (Note: rival Tome shut down its deck product in 2025.)
+small badge; a paid plan removes it. (Note: rival Tome shut down its deck product in 2025.)

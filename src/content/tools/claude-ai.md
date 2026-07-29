@@ -6,7 +6,7 @@ capability:
   coding: { strength: best, autonomy: most }
   research: { strength: strong, autonomy: most }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; Pro $20/mo" }
+pricing: freemium
 websiteUrl: "https://claude.ai"
 accentColor: "#d97757"
 tagline: "A thoughtful assistant for writing and code"
@@ -25,4 +25,4 @@ sources:
 
 Claude is the go-to for people who care about writing quality and careful
 reasoning. It excels at long-form drafts, analysis over big documents, and
-serious coding work. Free tier plus a $20/mo Pro plan.
+serious coding work. Free tier, with a paid Pro plan.

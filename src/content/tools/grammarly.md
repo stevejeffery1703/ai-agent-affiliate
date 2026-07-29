@@ -4,7 +4,7 @@ category: writing
 capability:
   writing: { strength: strong, autonomy: assist }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; Pro ~$12/mo" }
+pricing: freemium
 websiteUrl: "https://www.grammarly.com"
 accentColor: "#15c39a"
 tagline: "Polish everything you write"

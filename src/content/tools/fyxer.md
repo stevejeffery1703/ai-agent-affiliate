@@ -5,7 +5,7 @@ capability:
   email: { strength: strong, autonomy: most }
   meetings: { strength: solid, autonomy: most }
 ease: easy
-pricing: { model: paid, startingPrice: "From $18/mo (trial)" }
+pricing: paid
 websiteUrl: "https://www.fyxer.com"
 accentColor: "#2563eb"
 tagline: "An AI assistant for your inbox"

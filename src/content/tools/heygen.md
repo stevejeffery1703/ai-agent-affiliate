@@ -4,7 +4,7 @@ category: video
 capability:
   video: { strength: best, autonomy: most }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; Creator $29/mo" }
+pricing: freemium
 websiteUrl: "https://www.heygen.com"
 accentColor: "#7c3aed"
 tagline: "AI avatar videos in minutes"

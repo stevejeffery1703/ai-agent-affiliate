@@ -4,7 +4,7 @@ category: marketing
 capability:
   marketing: { strength: strong, autonomy: assist }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; from $5/channel/mo" }
+pricing: freemium
 websiteUrl: "https://buffer.com"
 accentColor: "#2c4bff"
 tagline: "Plan and publish social content with AI"

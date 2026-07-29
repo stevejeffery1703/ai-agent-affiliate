@@ -13,6 +13,14 @@ const PRICE_MODEL: Record<string, string> = {
   paid: 'paid',
 };
 
+// Stable, low-maintenance pricing label shown on cards (no specific numbers).
+const PRICE_LABEL: Record<string, string> = {
+  free: 'Free',
+  freemium: 'Free plan available',
+  trial: 'Free trial',
+  paid: 'Paid plans available',
+};
+
 // Compute the capability score at each control level (1-4) from the two rubric
 // values: full strength up to the tool's autonomy ceiling, then a linear taper.
 function curve(strengthKey: string, autonomyKey: string): Record<string, number> {
@@ -48,8 +56,8 @@ export function toEngineTool(entry: CollectionEntry<'tools'>) {
     tasks: Object.keys(capability),
     capability,
     ease: d.ease,
-    price: PRICE_MODEL[d.pricing.model] ?? 'paid',
-    priceLabel: d.pricing.startingPrice ?? '',
+    price: PRICE_MODEL[d.pricing] ?? 'paid',
+    priceLabel: PRICE_LABEL[d.pricing] ?? '',
     priority,
     logo: d.logo ?? null,
     accentColor: d.accentColor ?? null,

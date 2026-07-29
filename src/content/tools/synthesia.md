@@ -4,7 +4,7 @@ category: video
 capability:
   video: { strength: strong, autonomy: most }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free 10 min/mo; from $14/mo" }
+pricing: freemium
 websiteUrl: "https://www.synthesia.io"
 accentColor: "#0f172a"
 tagline: "Studio-quality AI videos from text"

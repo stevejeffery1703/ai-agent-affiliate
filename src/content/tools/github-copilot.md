@@ -4,7 +4,7 @@ category: coding
 capability:
   coding: { strength: strong, autonomy: most }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free tier; Pro $10/mo" }
+pricing: freemium
 websiteUrl: "https://github.com/features/copilot"
 accentColor: "#000000"
 tagline: "AI pair programmer in your IDE"
@@ -23,4 +23,4 @@ sources:
 
 Copilot is the most widely adopted coding assistant, living inside your existing
 editor with inline suggestions plus newer chat and agent modes. The easiest,
-lowest-friction on-ramp at $10/mo, especially if you're already on GitHub.
+lowest-friction on-ramp, especially if you're already on GitHub.

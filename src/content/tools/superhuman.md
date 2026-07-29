@@ -4,7 +4,7 @@ category: email
 capability:
   email: { strength: strong, autonomy: assist }
 ease: medium
-pricing: { model: paid, startingPrice: "From $30/mo" }
+pricing: paid
 websiteUrl: "https://superhuman.com"
 logo: "/assets/logos/superhuman.png"
 accentColor: "#000000"

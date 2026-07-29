@@ -4,7 +4,7 @@ category: design
 capability:
   design: { strength: best, autonomy: most }
 ease: medium
-pricing: { model: paid, startingPrice: "From ~$10/mo" }
+pricing: paid
 websiteUrl: "https://www.midjourney.com"
 accentColor: "#111827"
 tagline: "The gold standard for AI image quality"

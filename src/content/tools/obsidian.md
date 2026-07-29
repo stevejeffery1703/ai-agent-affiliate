@@ -4,7 +4,7 @@ category: notes
 capability:
   notes: { strength: strong, autonomy: suggest }
 ease: advanced
-pricing: { model: freemium, startingPrice: "Free; Sync ~$5/mo" }
+pricing: freemium
 websiteUrl: "https://obsidian.md"
 accentColor: "#7c3aed"
 tagline: "A local-first second brain"

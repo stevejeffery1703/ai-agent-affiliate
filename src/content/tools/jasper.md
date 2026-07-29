@@ -5,7 +5,7 @@ capability:
   marketing: { strength: strong, autonomy: most }
   writing: { strength: strong, autonomy: most }
 ease: medium
-pricing: { model: paid, startingPrice: "From ~$39/mo" }
+pricing: paid
 websiteUrl: "https://www.jasper.ai"
 accentColor: "#7c3aed"
 tagline: "On-brand content for marketing teams"

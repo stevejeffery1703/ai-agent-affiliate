@@ -4,7 +4,7 @@ category: meetings
 capability:
   meetings: { strength: best, autonomy: auto }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free plan; paid tiers" }
+pricing: freemium
 websiteUrl: "https://fathom.video"
 accentColor: "#5b5bd6"
 tagline: "Automatic notes for every meeting"

@@ -5,7 +5,7 @@ capability:
   design: { strength: strong, autonomy: most }
   presentations: { strength: strong, autonomy: most }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; Pro $12.99/mo" }
+pricing: freemium
 websiteUrl: "https://www.canva.com"
 accentColor: "#00c4cc"
 tagline: "Design anything, now with AI"

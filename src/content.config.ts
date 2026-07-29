@@ -69,10 +69,8 @@ const tools = defineCollection({
     // tool's task list from the keys here.
     capability,
     ease: z.enum(['easy', 'medium', 'advanced']),
-    pricing: z.object({
-      model: z.enum(['free', 'freemium', 'trial', 'paid']),
-      startingPrice: z.string().optional(),
-    }),
+    // Just the model — no specific prices (they go stale and add no value).
+    pricing: z.enum(['free', 'freemium', 'trial', 'paid']),
     websiteUrl: z.string().url(),
     // Human-owned. Omitted until we're in the program; NEVER invented.
     // When present, the tool earns the (small) monetization nudge.

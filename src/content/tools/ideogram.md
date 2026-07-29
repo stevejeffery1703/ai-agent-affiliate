@@ -4,7 +4,7 @@ category: design
 capability:
   design: { strength: strong, autonomy: most }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free; Plus $20/mo" }
+pricing: freemium
 websiteUrl: "https://ideogram.ai"
 accentColor: "#5b21b6"
 tagline: "AI images that get the text right"
@@ -23,4 +23,4 @@ sources:
 
 Ideogram is the one image generator that reliably puts legible text inside a
 picture — so it's the pick for anything with words in the design: logos, posters,
-social graphics, ad creative. Free to try daily, $20/mo for unlimited.
+social graphics, ad creative. Free to try daily, with a paid plan for unlimited.

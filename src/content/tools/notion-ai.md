@@ -5,7 +5,7 @@ capability:
   notes: { strength: best, autonomy: most }
   writing: { strength: solid, autonomy: assist }
 ease: medium
-pricing: { model: freemium, startingPrice: "Free; AI on Business $20/user/mo" }
+pricing: freemium
 websiteUrl: "https://www.notion.com"
 accentColor: "#000000"
 tagline: "Your workspace, now with AI"

@@ -4,7 +4,7 @@ category: scheduling
 capability:
   scheduling: { strength: best, autonomy: auto }
 ease: medium
-pricing: { model: paid, startingPrice: "From ~$29/mo" }
+pricing: paid
 websiteUrl: "https://www.usemotion.com"
 accentColor: "#e5484d"
 tagline: "Let AI plan your day"

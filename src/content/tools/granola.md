@@ -4,7 +4,7 @@ category: meetings
 capability:
   meetings: { strength: strong, autonomy: most }
 ease: easy
-pricing: { model: freemium, startingPrice: "Free tier; $14/user/mo" }
+pricing: freemium
 websiteUrl: "https://www.granola.ai"
 accentColor: "#000000"
 tagline: "Bot-free notes for back-to-back meetings"

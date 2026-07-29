@@ -5,7 +5,7 @@ capability:
   research: { strength: strong, autonomy: most }
   notes: { strength: solid, autonomy: assist }
 ease: easy
-pricing: { model: free }
+pricing: free
 websiteUrl: "https://notebooklm.google.com"
 accentColor: "#1a73e8"
 tagline: "Turn your own documents into a research assistant"
