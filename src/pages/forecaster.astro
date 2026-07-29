@@ -1,6 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import '../styles/recommender.css';
+import { getCollection } from 'astro:content';
+import { toEngineTool } from '../lib/tools';
+
+// Build-time: pull the validated tool collection and transform each entry into
+// the shape the client-side scoring engine expects.
+const tools = await getCollection('tools');
+const TOOLS = tools.map(toEngineTool);
 ---
 
 <Base
@@ -29,18 +36,18 @@ import '../styles/recommender.css';
               ><strong>What do you want AI to take off your plate?</strong></label
             >
             <div class="icon-grid" id="task">
-              <button class="icon-option active" data-value="writing">✍️<span>Content</span></button>
+              <button class="icon-option active" data-value="writing">✍️<span>Writing</span></button>
               <button class="icon-option" data-value="email">📧<span>Email</span></button>
-              <button class="icon-option" data-value="daily">⏱️<span>Tasks</span></button>
-              <button class="icon-option" data-value="research">🔍<span>Research</span></button>
-              <button class="icon-option" data-value="organization">🧠<span>Organize</span></button>
-              <button class="icon-option" data-value="automation">⚙️<span>Automation</span></button>
-              <button class="icon-option" data-value="personal_assistant">🗂️<span>Life Admin</span></button>
               <button class="icon-option" data-value="meetings">📝<span>Meetings</span></button>
+              <button class="icon-option" data-value="research">🔍<span>Research</span></button>
+              <button class="icon-option" data-value="scheduling">📅<span>Scheduling</span></button>
+              <button class="icon-option" data-value="notes">🧠<span>Notes</span></button>
+              <button class="icon-option" data-value="automation">⚙️<span>Automation</span></button>
               <button class="icon-option" data-value="coding">💻<span>Coding</span></button>
               <button class="icon-option" data-value="design">🎨<span>Design</span></button>
               <button class="icon-option" data-value="video">🎬<span>Video</span></button>
               <button class="icon-option" data-value="marketing">📈<span>Marketing</span></button>
+              <button class="icon-option" data-value="presentations">📊<span>Slides</span></button>
             </div>
           </div>
 
@@ -104,6 +111,10 @@ import '../styles/recommender.css';
     </section>
   </main>
 </Base>
+
+<!-- Tool data injected from the content collection (read by recommender.js) -->
+<script type="application/json" id="tools-data" set:html={JSON.stringify(TOOLS)}
+></script>
 
 <script>
   import { initRecommender } from '../scripts/recommender.js';

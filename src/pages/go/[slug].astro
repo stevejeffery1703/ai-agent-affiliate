@@ -1,0 +1,37 @@
+---
+// Affiliate redirect indirection: /go/{slug} -> the tool's affiliate link
+// (or its website while no affiliate link exists yet). One place controls
+// every outbound link, and click-tracking can be added here later.
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const tools = await getCollection('tools');
+  return tools.map((tool) => ({
+    params: { slug: tool.id },
+    props: {
+      url: tool.data.affiliateUrl ?? tool.data.websiteUrl,
+      name: tool.data.name,
+    },
+  }));
+}
+
+const { url, name } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${url}`} />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={url} />
+    <title>Redirecting to {name}…</title>
+  </head>
+  <body>
+    <p>
+      Redirecting to {name}…
+      <a href={url} rel="sponsored noopener">Continue</a>
+    </p>
+    <script is:inline set:html={`location.replace(${JSON.stringify(url)})`}></script>
+  </body>
+</html>

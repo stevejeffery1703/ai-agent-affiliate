@@ -1,11 +1,13 @@
 // ==========================================
 // RECOMMENDER APP LOGIC
 // UI -> scoring engine -> rendered results
-// (Ported from the original app.js and adapted for Astro.)
+// Tool data is injected by the page (from the content collection) into a
+// <script type="application/json" id="tools-data"> block.
 // ==========================================
 
-import { TOOLS } from '../data/tools.js';
 import { scoreTools } from './engine.js';
+
+let TOOLS = [];
 
 const controlLabels = {
   1: 'I just want suggestions',
@@ -23,6 +25,13 @@ const easeLabels = {
 export function initRecommender() {
   const runBtn = document.getElementById('runBtn');
   if (!runBtn) return; // not on the recommender page
+
+  const dataEl = document.getElementById('tools-data');
+  try {
+    TOOLS = dataEl ? JSON.parse(dataEl.textContent) : [];
+  } catch {
+    TOOLS = [];
+  }
 
   // Icon grid: single-select
   const iconOptions = document.querySelectorAll('.icon-option');
@@ -73,7 +82,7 @@ function runRecommendation() {
     .getElementById('results')
     .scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  // Upsell block only shown when the user restricted to free tools
+  // Upsell block only when the user restricted to free tools
   if (user.price === 'free') {
     const freeIds = new Set(freeResults.map((t) => t.id));
     const paidOnly = allResults.filter(
@@ -83,6 +92,16 @@ function runRecommendation() {
   } else {
     document.getElementById('upgrade-results').innerHTML = '';
   }
+}
+
+// Logo, or a colored initial when a tool has no logo yet.
+function logoHTML(tool) {
+  if (tool.logo) {
+    return `<img src="${tool.logo}" alt="${tool.name} logo" class="tool-logo">`;
+  }
+  const initial = (tool.name || '?').trim().charAt(0).toUpperCase();
+  const color = tool.accentColor || '#10b981';
+  return `<span class="tool-logo tool-logo-fallback" style="background:${color}">${initial}</span>`;
 }
 
 function renderResults(results, user, containerId = 'results') {
@@ -107,16 +126,18 @@ function renderResults(results, user, containerId = 'results') {
     const featuresHTML = tool.features?.map((f) => `<li>${f}</li>`).join('') || '';
     const badgesHTML = tool.badges?.map((b) => `<span class="badge">${b}</span>`).join('') || '';
     const why = getWhyText(user, tool);
+    const priceHTML = tool.priceLabel ? `<p class="price">${tool.priceLabel}</p>` : '';
 
     el.innerHTML = `
       ${index === 0 ? '<span class="featured-badge">Top match</span>' : ''}
       <div class="card-header">
-        <img src="${tool.logo}" alt="${tool.name} logo" class="tool-logo">
+        ${logoHTML(tool)}
         <h3>${tool.name}</h3>
       </div>
       <div class="score-bar"><div class="score-fill" style="width:${tool.percentage}%"></div></div>
       <p><strong>${tool.percentage}% match</strong> &bull; ${label}</p>
       <p class="tagline">${tool.tagline}</p>
+      ${priceHTML}
       <p class="why-title"><strong>Why this fits you:</strong></p>
       <ul class="why-list">${why.map((r) => `<li>${r}</li>`).join('')}</ul>
       <p class="best-for">${tool.bestFor}</p>
@@ -153,16 +174,18 @@ function renderUpgradeResults(results, freeResults) {
 
   results.forEach((tool) => {
     const gain = tool.percentage - bestFree;
+    const priceHTML = tool.priceLabel ? `<p class="price">${tool.priceLabel}</p>` : '';
     const el = document.createElement('div');
     el.className = 'result-card';
     el.innerHTML = `
       <div class="card-header">
-        <img src="${tool.logo}" alt="${tool.name} logo" class="tool-logo">
+        ${logoHTML(tool)}
         <h3>${tool.name}</h3>
       </div>
       <div class="score-bar"><div class="score-fill" style="width:${tool.percentage}%"></div></div>
       <p><strong>${tool.percentage}% match</strong> ${gain > 0 ? `(+${gain}% better)` : ''}</p>
       <p class="tagline">${tool.tagline}</p>
+      ${priceHTML}
       <p class="best-for">${tool.bestFor}</p>
       <a href="${tool.url}" target="_blank" rel="sponsored noopener" class="button button-primary">Try ${tool.name}</a>
     `;
@@ -189,7 +212,7 @@ function getWhyText(user, tool) {
   }
 
   if (task && level && tool.capability?.[task]) {
-    const score = tool.capability[task][level];
+    const score = tool.capability[task][String(level)];
     if (score >= 0.85) parts.push('Handles this task extremely well');
     else if (score >= 0.7) parts.push('Reliably performs this task');
   }
