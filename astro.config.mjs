@@ -2,10 +2,10 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// NOTE: `site` must be the real production URL for the sitemap + canonical
-// tags to be correct. This is a placeholder — update it once the Cloudflare
-// domain is confirmed (e.g. https://<project>.pages.dev or a custom domain).
+// `site` is the production URL used for canonical tags + the sitemap.
+// Currently the Cloudflare Workers URL; change this to a custom domain when
+// one is added (then rebuild + redeploy so the tags/sitemap update).
 export default defineConfig({
-  site: 'https://ai-agent-affiliate.pages.dev',
+  site: 'https://ai-agent-affiliate.stevejeffery1703.workers.dev',
   integrations: [sitemap()],
 });
