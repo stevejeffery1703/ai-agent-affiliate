@@ -1,0 +1,270 @@
+/* =======================================================
+   RECOMMENDER + RESULTS STYLES
+   Imported globally by the /forecaster page so that the
+   JS-rendered result cards (created via innerHTML) are
+   styled too — scoped Astro styles would not reach them.
+======================================================= */
+
+/* ============ RECOMMENDER CARD ============ */
+.recommender-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ============ FORM ============ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+/* ============ ICON GRID ============ */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.icon-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: all 0.15s ease;
+}
+
+.icon-option span {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+}
+
+.icon-option:hover {
+  border-color: var(--primary);
+}
+
+.icon-option.active {
+  border: 2px solid var(--primary);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+/* ============ SLIDER ============ */
+.slider-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.slider-group input {
+  flex: 1;
+}
+
+.slider-group span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.slider-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ============ TOGGLE ============ */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.toggle input:checked + .toggle-slider {
+  background: var(--primary);
+}
+
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(22px);
+}
+
+.toggle-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ============ RESULTS ============ */
+#results,
+#upgrade-results {
+  margin-top: 1rem;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+@media (min-width: 1100px) {
+  .results-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.result-card {
+  border: 1px solid var(--border-strong);
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+}
+
+.result-card .button {
+  margin-top: auto;
+}
+
+.result-card.featured {
+  border: 2px solid var(--primary);
+  background: rgba(16, 185, 129, 0.08);
+  transform: scale(1.03);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tool-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.score-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-soft);
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.score-fill {
+  height: 100%;
+  background: var(--score-fill);
+  border-radius: 5px;
+}
+
+.tagline {
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.best-for {
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.why-title {
+  margin-top: 0.5rem;
+}
+
+.why-list,
+.features {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1.2rem;
+}
+
+.features li,
+.why-list li {
+  margin-bottom: 0.25rem;
+}
+
+.badges {
+  margin-bottom: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  background: var(--secondary);
+  color: #ffffff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  margin-right: 0.3rem;
+}
+
+.featured-badge {
+  display: inline-block;
+  background: var(--primary);
+  color: #022c22;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  margin-bottom: 0.5rem;
+  align-self: flex-start;
+}
+
+/* ============ PAID UPGRADE ============ */
+.upgrade-box {
+  border: 2px solid var(--primary);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+  background: var(--bg-soft);
+}
+
+.upgrade-grid .result-card {
+  opacity: 0.92;
+}
+
+.upgrade-grid .result-card:hover {
+  opacity: 1;
+}
