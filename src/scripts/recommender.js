@@ -74,7 +74,7 @@ function runRecommendation() {
   const freeResults = scoreTools({ ...user, price: 'free' }, TOOLS);
   const allResults = scoreTools({ ...user, price: 'all' }, TOOLS);
 
-  const mainResults = (user.price === 'free' ? freeResults : allResults).slice(0, 4);
+  const mainResults = (user.price === 'free' ? freeResults : allResults).slice(0, 11);
 
   renderResults(mainResults, user, 'results');
 
@@ -114,10 +114,15 @@ function renderResults(results, user, containerId = 'results') {
     return;
   }
 
+  const TOP = 3;
+  const top = results.slice(0, TOP);
+  const rest = results.slice(TOP);
+
+  // Top matches — full cards
   const grid = document.createElement('div');
   grid.className = 'results-grid';
 
-  results.forEach((tool, index) => {
+  top.forEach((tool, index) => {
     const label = getLabel(tool.percentage);
     const el = document.createElement('div');
     el.className = 'result-card';
@@ -150,6 +155,35 @@ function renderResults(results, user, containerId = 'results') {
   });
 
   container.appendChild(grid);
+
+  // Also worth considering — compact chips (gives the top picks context)
+  if (rest.length) {
+    const also = document.createElement('div');
+    also.className = 'also-considered';
+    also.innerHTML = '<h3 class="also-title">Also worth considering</h3>';
+
+    const alsoGrid = document.createElement('div');
+    alsoGrid.className = 'also-grid';
+
+    rest.forEach((tool) => {
+      const chip = document.createElement('a');
+      chip.className = 'also-card';
+      chip.href = tool.url;
+      chip.target = '_blank';
+      chip.rel = 'sponsored noopener';
+      chip.innerHTML = `
+        ${logoHTML(tool)}
+        <span class="also-info">
+          <span class="also-name">${tool.name}</span>
+          <span class="also-meta">${tool.percentage}% match${tool.priceLabel ? ' &middot; ' + tool.priceLabel : ''}</span>
+        </span>
+      `;
+      alsoGrid.appendChild(chip);
+    });
+
+    also.appendChild(alsoGrid);
+    container.appendChild(also);
+  }
 }
 
 function renderUpgradeResults(results, freeResults) {

@@ -1,6 +1,6 @@
 /* =======================================================
    RECOMMENDER + RESULTS STYLES
-   Imported globally by the /forecaster page so that the
+   Imported globally by the /finder page so that the
    JS-rendered result cards (created via innerHTML) are
    styled too — scoped Astro styles would not reach them.
 ======================================================= */
@@ -201,6 +201,67 @@
   color: var(--text-muted);
   font-size: 0.85rem;
   margin-top: 0.25rem;
+}
+
+/* ============ ALSO WORTH CONSIDERING (compact chips) ============ */
+.also-considered {
+  margin-top: 2rem;
+}
+
+.also-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.also-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.5rem;
+}
+
+.also-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.15s ease;
+}
+
+.also-card:hover {
+  border-color: var(--primary);
+}
+
+.also-card .tool-logo {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.also-card .tool-logo-fallback {
+  font-size: 0.75rem;
+}
+
+.also-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.also-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.also-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
 .score-bar {
