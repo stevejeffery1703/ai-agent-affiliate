@@ -53,6 +53,14 @@
   --secondary: var(--accent);
 }
 
+/* The browser's own `[hidden] { display: none }` is a UA-stylesheet rule, so ANY
+   author rule that sets `display` beats it — `.dir-card { display: flex }` silently
+   defeated the directory filter, leaving every card on screen while the count said
+   otherwise. Anything toggled via the hidden attribute needs this to stay hidden. */
+[hidden] {
+  display: none !important;
+}
+
 /* === BASE TYPOGRAPHY === */
 body {
   font-family: var(--font-body, system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
