@@ -95,6 +95,52 @@ a:hover {
   color: var(--accent-hover);
 }
 
+/* === FORM CONTROLS ===
+   Native range inputs paint their filled track with the OS accent colour —
+   bright blue on Windows — which sat right above a green button and was the
+   loudest thing on the page. Style them explicitly instead. `accent-color`
+   covers the checkbox and any control we haven't hand-styled. */
+:root {
+  accent-color: var(--accent);
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border-strong);
+  cursor: pointer;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--card);
+  box-shadow: 0 1px 3px rgba(23, 21, 15, 0.25);
+  cursor: pointer;
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--card);
+  box-shadow: 0 1px 3px rgba(23, 21, 15, 0.25);
+  cursor: pointer;
+}
+
+input[type='range']::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border-strong);
+}
+
 /* Visible keyboard focus everywhere. There was none before. */
 :focus-visible {
   outline: 2px solid var(--accent);

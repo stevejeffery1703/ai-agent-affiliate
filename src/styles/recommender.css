@@ -306,8 +306,22 @@
   color: var(--text-muted);
 }
 
+/* Drop the default disclosure triangle — it read as a stray glyph sitting on
+   its own line under the meta row. An underlined label is a clearer affordance
+   and matches the rest of the type. */
 .pick-sources summary {
   cursor: pointer;
+  list-style: none;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.pick-sources summary::-webkit-details-marker {
+  display: none;
+}
+
+.pick-sources[open] summary {
+  margin-bottom: 0.15rem;
 }
 
 .pick-sources ul {

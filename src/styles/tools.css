@@ -207,8 +207,11 @@
 /* Key facts */
 .tool-facts {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  /* 2x2, not 4-up. The page column is capped at 44rem, which only leaves ~142px
+     per column at four across — enough to wrap "Works out of the box" onto three
+     lines. Three columns fits but orphans the fourth item. */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 1.5rem;
   margin: 1.75rem 0;
   padding: 1.15rem 1.25rem;
   border: 1px solid var(--border);
@@ -299,9 +302,15 @@
   border-radius: 0 8px 8px 0;
 }
 
-/* Provenance */
+/* Provenance. Mute the body text only — putting `color` on the section itself
+   also greyed out its <h2>, so "How we checked" rendered weaker than every
+   other heading on the page. */
 .tool-sources {
   font-size: 0.9rem;
+}
+
+.tool-sources p,
+.tool-sources li {
   color: var(--text-muted);
 }
 
@@ -344,9 +353,7 @@
 }
 
 @media (max-width: 700px) {
-  .tool-facts {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  /* .tool-facts is already 2x2 at every width — no override needed. */
   .rubric-row {
     grid-template-columns: 1fr;
     gap: 0.3rem;
