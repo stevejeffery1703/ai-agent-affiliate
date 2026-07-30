@@ -53,7 +53,49 @@ export function initRecommender() {
     run();
   });
 
+  initRefineToggle();
   run(); // populate on load — an empty results column would be a dead page
+}
+
+// On a phone the three refinements sat between the task picker and the first
+// result, so you scrolled past every control to reach an answer. Collapse them
+// behind a summary that still shows what's currently applied. The rail is
+// always open on desktop, where there's room beside the results.
+function initRefineToggle() {
+  const toggle = document.getElementById('refineToggle');
+  const panel = document.getElementById('refine');
+  if (!toggle || !panel) return;
+
+  const isMobile = () => window.matchMedia('(max-width: 900px)').matches;
+
+  const setOpen = (open) => {
+    toggle.setAttribute('aria-expanded', String(open));
+    panel.classList.toggle('is-open', open);
+  };
+
+  toggle.addEventListener('click', () => {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  // Start collapsed on small screens only. Desktop CSS shows the panel
+  // regardless, so the state here just tracks the mobile disclosure.
+  setOpen(!isMobile());
+
+  window.addEventListener('resize', () => {
+    if (!isMobile()) setOpen(true);
+  });
+}
+
+// Reflect the current refinements in the collapsed summary, so you can see
+// what's applied without opening it.
+function updateRefineState() {
+  const el = document.getElementById('refineState');
+  if (!el) return;
+  const labels = ['control', 'ease', 'price'].map((g) => {
+    const btn = document.querySelector(`[data-group="${g}"][aria-pressed="true"]`);
+    return btn ? btn.textContent.trim() : '';
+  });
+  el.textContent = labels.filter(Boolean).join(' · ');
 }
 
 function run() {
@@ -65,6 +107,7 @@ function run() {
   };
 
   renderResults(user);
+  updateRefineState();
 
   // The upsell only makes sense when they've restricted themselves to free.
   if (user.freeOnly) renderUpgrade(user);
@@ -184,7 +227,7 @@ function renderResults(user) {
 
   const runnersHTML = runners.length
     ? `<div class="runners">
-         <h3 class="runners-title">Also considered</h3>
+         <h3 class="runners-title">Other tools to consider</h3>
          <div class="runners-grid">
            ${runners
              .slice(0, RUNNERS_SHOWN)
@@ -214,16 +257,18 @@ function renderResults(user) {
        </div>`
     : '';
 
+  // The "we compared N" line reads as a footnote to the answer, not a preamble
+  // to it — so it sits after the results rather than delaying them.
   container.innerHTML = `
-    <p class="rec-summary">
-      We compared <strong>${capableN}</strong> tools that do ${esc(user.task)}.${filtered}
-      <a href="/about">How we choose</a>
-    </p>
     <div class="picks">
       ${roles.map((r, i) => pickHTML(r, ranked, user, i === 0, shownIds)).join('')}
     </div>
     ${tiesHTML}
     ${runnersHTML}
+    <p class="rec-summary">
+      We compared <strong>${capableN}</strong> tools that do ${esc(user.task)}.${filtered}
+      <a href="/about">How we choose</a>
+    </p>
   `;
 }
 

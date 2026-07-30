@@ -37,12 +37,14 @@ const CONTROL_OPTIONS = [
   { value: '1', label: 'Just suggest' },
   { value: '2', label: 'Help me decide' },
   { value: '3', label: 'Do most of it' },
-  { value: '4', label: 'Handle it' },
+  { value: '4', label: 'Do it all' },
 ];
+// The axis is how much setup you'll put up with, so all three answer that
+// question. "Give me power" answered a different one.
 const EASE_OPTIONS = [
   { value: 'easy', label: 'Keep it simple' },
   { value: 'medium', label: 'Some setup' },
-  { value: 'advanced', label: 'Give me power' },
+  { value: 'advanced', label: 'Happy to tinker' },
 ];
 const PRICE_OPTIONS = [
   { value: 'all', label: 'Any price' },
@@ -56,15 +58,14 @@ const PRICE_OPTIONS = [
 >
   <main class="page">
     <section class="lede">
-      <h1>Find the AI tools that fit how you work</h1>
-      <p>Pick what you need done. We'll show you the few worth your time, and why.</p>
+      <h1>AI Tools to Help You Work</h1>
     </section>
 
     <div class="finder-layout">
       <!-- CONTROLS -->
       <form class="rail" id="recommender" aria-label="Refine recommendations">
         <div class="field">
-          <span class="field-label" id="lbl-task">What do you need done?</span>
+          <span class="field-lead" id="lbl-task">What do you need done?</span>
           <div class="chips" role="group" aria-labelledby="lbl-task" id="task">
             {
               TASK_OPTIONS.map((opt, i) => (
@@ -83,6 +84,19 @@ const PRICE_OPTIONS = [
           </div>
         </div>
 
+        {/* Collapsed behind a summary on mobile, always open on desktop. */}
+        <button
+          type="button"
+          class="refine-toggle"
+          id="refineToggle"
+          aria-expanded="true"
+          aria-controls="refine"
+        >
+          <span class="refine-word">Refine</span>
+          <span class="refine-state" id="refineState"></span>
+        </button>
+
+        <div class="refine" id="refine">
         <div class="field">
           <span class="field-label" id="lbl-control">How much should it do?</span>
           <div class="chips" role="group" aria-labelledby="lbl-control">
@@ -138,6 +152,7 @@ const PRICE_OPTIONS = [
               ))
             }
           </div>
+        </div>
         </div>
       </form>
 

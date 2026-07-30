@@ -33,12 +33,32 @@
   gap: 0.5rem;
 }
 
+/* Two tiers, so the rail reads as one real question plus some refinements
+   rather than four equally-shouty uppercase labels stacked up. The primary
+   question is set as a question; the rest stay quiet until you look at them. */
+.field-lead {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
 .field-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--text-muted);
+}
+
+/* Hairline between the primary question and the refinements. */
+.refine {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.refine-toggle {
+  display: none; /* desktop: the panel is simply open, so no toggle is needed */
 }
 
 .chips {
@@ -98,6 +118,72 @@
   }
   .rail {
     position: static;
+    gap: 1rem;
+  }
+
+  /* The refinements collapse behind a summary so the controls don't push the
+     first result off the screen. */
+  .refine-toggle {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.6rem 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+    background: none;
+    font: inherit;
+    text-align: left;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .refine-word {
+    font-weight: 600;
+    color: var(--text);
+    /* Keep the word and its chevron together — without this the chevron gets
+       squeezed onto its own line once the state summary claims the row. */
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Chevron that flips when the panel opens. */
+  .refine-word::after {
+    content: "";
+    display: inline-block;
+    width: 0.42em;
+    height: 0.42em;
+    margin-left: 0.45em;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-0.15em) rotate(45deg);
+    transition: transform 0.15s ease;
+  }
+
+  .refine-toggle[aria-expanded="true"] .refine-word::after {
+    transform: translateY(0.05em) rotate(-135deg);
+  }
+
+  .refine-state {
+    font-size: 0.85rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .refine-toggle[aria-expanded="true"] .refine-state {
+    display: none; /* the chips themselves show the state once open */
+  }
+
+  .refine {
+    display: none;
+    padding-top: 0.25rem;
+    border-top: 0;
+  }
+
+  .refine.is-open {
+    display: flex;
   }
 }
 /* =======================================================
@@ -111,11 +197,14 @@
   margin-top: 1rem;
 }
 
+/* A footnote under the answer, not a preamble above it. */
 .rec-summary {
   max-width: 760px;
-  margin: 0 auto 1.5rem;
+  margin: 2rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: 0.87rem;
 }
 
 .rec-summary strong {
