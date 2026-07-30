@@ -13,18 +13,6 @@ let TOOLS = [];
 // page readable now and bounded as the collection grows.
 const RUNNERS_SHOWN = 6;
 
-const controlLabels = {
-  1: 'I just want suggestions',
-  2: 'Help me decide',
-  3: 'Do most of the work',
-  4: 'Handle it for me',
-};
-
-const easeLabels = {
-  1: 'Simple and easy (works out of the box)',
-  2: 'Learn a bit (some setup, better results)',
-  3: 'Invest time (more complex; most powerful)',
-};
 
 // Authored content is trusted, but it still goes through innerHTML — an
 // apostrophe or angle bracket in a tagline shouldn't be able to break markup.
@@ -35,9 +23,15 @@ function esc(s) {
   );
 }
 
+// Read the selected value out of one group of segmented buttons.
+function selected(group) {
+  const el = document.querySelector(`[data-group="${group}"][aria-pressed="true"]`);
+  return el ? el.dataset.value : null;
+}
+
 export function initRecommender() {
-  const runBtn = document.getElementById('runBtn');
-  if (!runBtn) return; // not on the recommender page
+  const form = document.getElementById('recommender');
+  if (!form) return; // not on the recommender page
 
   const dataEl = document.getElementById('tools-data');
   try {
@@ -46,54 +40,33 @@ export function initRecommender() {
     TOOLS = [];
   }
 
-  // Icon grid: single-select. aria-pressed is kept in step with .active so the
-  // selection is exposed to assistive tech, not just conveyed by colour.
-  const iconOptions = document.querySelectorAll('.icon-option');
-  iconOptions.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      iconOptions.forEach((b) => {
-        b.classList.remove('active');
-        b.setAttribute('aria-pressed', 'false');
-      });
-      btn.classList.add('active');
-      btn.setAttribute('aria-pressed', 'true');
-    });
+  // One handler for every control: each group is single-select, and any change
+  // re-renders immediately. No submit button — the results sit beside the
+  // controls, so there's nothing to "run" and nothing to scroll to.
+  form.addEventListener('click', (event) => {
+    const btn = event.target.closest('[data-group]');
+    if (!btn) return;
+    const group = btn.dataset.group;
+    form
+      .querySelectorAll(`[data-group="${group}"]`)
+      .forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    run();
   });
 
-  // Slider labels
-  const controlSlider = document.getElementById('control');
-  const easeSlider = document.getElementById('ease');
-  const controlLabel = document.getElementById('control-label');
-  const easeLabel = document.getElementById('ease-label');
-
-  controlLabel.textContent = controlLabels[controlSlider.value];
-  easeLabel.textContent = easeLabels[easeSlider.value];
-
-  controlSlider.addEventListener('input', () => {
-    controlLabel.textContent = controlLabels[controlSlider.value];
-  });
-  easeSlider.addEventListener('input', () => {
-    easeLabel.textContent = easeLabels[easeSlider.value];
-  });
-
-  runBtn.addEventListener('click', runRecommendation);
+  run(); // populate on load — an empty results column would be a dead page
 }
 
-function runRecommendation() {
-  const activeIcon = document.querySelector('.icon-option.active');
-
+function run() {
   const user = {
-    task: activeIcon ? activeIcon.dataset.value : null,
-    control: Number(document.getElementById('control').value),
-    ease: mapEase(document.getElementById('ease').value),
-    freeOnly: document.getElementById('price').checked,
+    task: selected('task'),
+    control: Number(selected('control')) || 2,
+    ease: selected('ease') || 'easy',
+    freeOnly: selected('price') === 'free',
   };
 
   renderResults(user);
 
-  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  // Upsell only makes sense when the user restricted themselves to free tools.
+  // The upsell only makes sense when they've restricted themselves to free.
   if (user.freeOnly) renderUpgrade(user);
   else document.getElementById('upgrade-results').innerHTML = '';
 }
@@ -294,7 +267,3 @@ function renderUpgrade(user) {
   `;
 }
 
-function mapEase(value) {
-  const map = { 1: 'easy', 2: 'medium', 3: 'advanced' };
-  return map[value] || 'easy';
-}

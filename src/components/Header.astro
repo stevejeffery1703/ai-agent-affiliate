@@ -13,11 +13,7 @@ const path = Astro.url.pathname;
   <nav class="nav">
     {
       links.map((link) => (
-        <a
-          href={link.href}
-          class="button button-secondary"
-          aria-current={path === link.href ? 'page' : undefined}
-        >
+        <a href={link.href} aria-current={path === link.href ? 'page' : undefined}>
           {link.label}
         </a>
       ))
@@ -41,11 +37,22 @@ const path = Astro.url.pathname;
   }
   .nav {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     flex-wrap: wrap;
   }
+  /* Text links, not bordered buttons — two outlined pills in the header read
+     as calls to action competing with the tool itself. */
+  .nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  .nav a:hover {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
   .nav a[aria-current='page'] {
-    border-color: var(--primary);
-    color: var(--primary);
+    color: var(--text);
   }
 </style>

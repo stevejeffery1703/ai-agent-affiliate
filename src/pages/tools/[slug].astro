@@ -173,13 +173,16 @@ const initial = d.name.trim().charAt(0).toUpperCase();
       <a href={`/go/${tool.id}`} target="_blank" rel="sponsored noopener" class="button button-primary">
         Visit {d.name}
       </a>
-      <small>
-        {
-          d.affiliateUrl
-            ? 'This is an affiliate link — we may earn a commission at no extra cost to you. It has no effect on how we rank tools.'
-            : 'We earn nothing if you click this. We are not in an affiliate programme with them.'
-        }
-      </small>
+      {
+        /* Only disclose when there's something to disclose. Announcing the
+           absence of a commission on every page was noise. */
+        d.affiliateUrl && (
+          <small>
+            Affiliate link — we may earn a commission, at no extra cost to you.
+            It never affects our rankings.
+          </small>
+        )
+      }
     </div>
 
     {

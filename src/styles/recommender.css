@@ -1,155 +1,105 @@
 /* =======================================================
-   RECOMMENDER + RESULTS STYLES
-   Imported globally by the homepage so that the
-   JS-rendered result cards (created via innerHTML) are
-   styled too — scoped Astro styles would not reach them.
+   FINDER CONTROLS + LAYOUT
+   Imported globally by the homepage so that the JS-rendered
+   result cards (created via innerHTML) are styled too —
+   scoped Astro styles would not reach them.
+
+   Every input is the same control: a segmented set of chips.
+   Sliders hid their labels behind a drag and were the wrong
+   shape for 3-4 fixed choices; the free-only toggle never
+   said what "on" meant.
 ======================================================= */
 
-/* ============ RECOMMENDER CARD ============ */
-.recommender-card {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.finder-layout {
+  display: grid;
+  grid-template-columns: 17.5rem 1fr;
+  gap: 2.5rem;
+  align-items: start;
+  padding-bottom: 3rem;
 }
 
-/* ============ FORM ============ */
-.form-group {
+/* Controls stay in view while you read down the results. */
+.rail {
+  position: sticky;
+  top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.field {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.form-label {
-  font-size: 0.95rem;
-  color: var(--text);
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-/* ============ ICON GRID ============ */
-.icon-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.75rem;
-}
-
-.icon-option {
+.chips {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.chip {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  padding: 0.9rem 0.5rem;
-  border-radius: var(--radius-sm);
-  /* Transparent 2px border, so selecting an option doesn't change its size and
-     shift the whole grid. */
-  border: 2px solid transparent;
+  gap: 0.35rem;
+  padding: 0.34rem 0.7rem;
+  border: 1px solid transparent;
+  /* Inset ring rather than a border, so selecting never changes the chip's
+     size and reflows the group. */
   box-shadow: inset 0 0 0 1px var(--border);
+  border-radius: 999px;
   background: var(--card);
   color: var(--text-muted);
+  font: inherit;
+  font-size: 0.85rem;
+  line-height: 1.35;
   cursor: pointer;
-  font-family: inherit;
   transition:
-    color 0.15s ease,
-    background-color 0.15s ease,
-    box-shadow 0.15s ease;
+    color 0.12s ease,
+    background-color 0.12s ease,
+    box-shadow 0.12s ease;
 }
 
-/* Sized here rather than on the SVG, and inheriting `color` — that's what makes
-   a selected option's icon pick up the accent. */
-.icon-option svg {
-  width: 22px;
-  height: 22px;
-  stroke-width: 1.75;
+.chip svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.9;
+  flex-shrink: 0;
 }
 
-.icon-option span {
-  font-size: 0.78rem;
-  font-weight: 500;
-  line-height: 1.2;
-  text-align: center;
-}
-
-.icon-option:hover {
+.chip:hover {
   color: var(--text);
   box-shadow: inset 0 0 0 1px var(--border-strong);
 }
 
-.icon-option.active {
+.chip[aria-pressed='true'] {
   color: var(--accent);
   background: var(--accent-tint);
   box-shadow: inset 0 0 0 2px var(--accent);
 }
 
-/* ============ SLIDER ============ */
-.slider-group {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.results-col {
+  min-width: 0;
 }
 
-.slider-group input {
-  flex: 1;
+@media (max-width: 900px) {
+  .finder-layout {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+  .rail {
+    position: static;
+  }
 }
-
-.slider-group span {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.slider-label {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-top: 0.25rem;
-}
-
-/* ============ TOGGLE ============ */
-.toggle {
-  position: relative;
-  display: inline-block;
-  width: 46px;
-  height: 24px;
-}
-
-.toggle input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  position: absolute;
-  inset: 0;
-  background: var(--border);
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.toggle-slider::before {
-  content: "";
-  position: absolute;
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  top: 3px;
-  background: white;
-  border-radius: 50%;
-  transition: 0.2s;
-}
-
-.toggle input:checked + .toggle-slider {
-  background: var(--primary);
-}
-
-.toggle input:checked + .toggle-slider::before {
-  transform: translateX(22px);
-}
-
-.toggle-hint {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-
 /* =======================================================
    RESULTS
    Editorial stack, not a column of identical cards. Each

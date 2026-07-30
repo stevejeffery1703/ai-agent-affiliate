@@ -1,9 +1,10 @@
 /* =======================================================
-   EDITORIAL PAGE STYLES  (homepage + about)
-   The finder is the product; these pages are the argument
-   for trusting it. Layout is a review publication's —
-   a single readable column, generous rhythm, colour used
-   only where it means something.
+   EDITORIAL PAGE STYLES  (homepage shell + about)
+   The finder is the product. These styles stay out of its
+   way: a short lede, then the tool, then one quiet line of
+   facts. Trust is demonstrated inside the results — the
+   sources, dates and caveats on each pick — rather than
+   asserted in bands of copy above them.
 ======================================================= */
 
 /* ---------------- shared shell ---------------- */
@@ -11,11 +12,6 @@
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 1.5rem;
-}
-
-.measure {
-  max-width: 40rem; /* ~68 characters — the comfortable reading measure */
-  margin-inline: auto;
 }
 
 .eyebrow {
@@ -26,158 +22,32 @@
   color: var(--text-muted);
 }
 
-/* ---------------- hero ---------------- */
-.hero-block {
-  text-align: center;
-  padding: 4rem 0 2.5rem;
+/* ---------------- homepage lede ---------------- */
+.lede {
+  padding: 2.5rem 0 2rem;
+  max-width: 34rem;
 }
 
-.hero-block h1 {
-  margin: 0.9rem auto 0;
-  max-width: 18ch;
+.lede h1 {
+  font-size: clamp(1.9rem, 1.3rem + 2.2vw, 2.6rem);
 }
 
-.hero-lead {
-  margin: 1.15rem auto 0;
-  max-width: 46ch;
-  font-size: 1.12rem;
+.lede p {
+  margin-top: 0.7rem;
   color: var(--text-muted);
+  font-size: 1.05rem;
 }
 
-.hero-actions {
-  margin-top: 1.9rem;
-  display: flex;
-  gap: 0.7rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-/* The finder sits directly below the hero, so the hero stays short — the tool
-   is the point of the page and shouldn't be pushed below the fold. */
-.hero-compact {
-  padding: 3rem 0 1.75rem;
-}
-
-/* Facts, not adjectives — each one is checkable on the site. */
-.trust-strip {
-  margin: 2.5rem auto 0;
-  padding-top: 1.5rem;
+/* One quiet line, below the tool — not a band of reassurance above it. */
+.page-foot {
+  padding: 1.5rem 0 3rem;
   border-top: 1px solid var(--border);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem 1.6rem;
-  list-style: none;
   font-size: 0.87rem;
   color: var(--text-muted);
 }
 
-.trust-strip strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-.trust-strip-tight {
-  margin-top: 1.75rem;
-  padding-top: 1.25rem;
-}
-
-/* ---------------- finder on the homepage ---------------- */
-.finder-section {
-  padding-bottom: 3.5rem;
-}
-
-/* Match the results column width so the form and its answers line up. */
-.finder-wrap {
-  max-width: 47.5rem;
-  margin: 0 auto;
-}
-
-.band-foot {
-  margin-top: 2.25rem;
-  text-align: center;
-  font-size: 0.94rem;
-}
-
-/* ---------------- generic section ---------------- */
-.band {
-  padding: 3.5rem 0;
-  border-top: 1px solid var(--border);
-}
-
-.band-soft {
-  background: var(--bg-soft);
-}
-
-.band-head {
-  text-align: center;
-  margin-bottom: 2.25rem;
-}
-
-.band-head p {
-  margin: 0.7rem auto 0;
-  max-width: 48ch;
-  color: var(--text-muted);
-}
-
-/* ---------------- how it works ---------------- */
-.steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  counter-reset: step;
-}
-
-.step {
-  counter-increment: step;
-}
-
-.step h3 {
-  font-family: var(--font-body, system-ui, sans-serif);
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.35rem;
-}
-
-.step h3::before {
-  content: counter(step);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.55rem;
-  height: 1.55rem;
-  margin-right: 0.55rem;
-  border-radius: 50%;
-  background: var(--accent-tint);
-  color: var(--accent);
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.step p {
-  color: var(--text-muted);
-  font-size: 0.94rem;
-}
-
-/* ---------------- trust points ---------------- */
-.points {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem 2rem;
-  max-width: 52rem;
-  margin: 0 auto;
-}
-
-.point h3 {
-  font-family: var(--font-body, system-ui, sans-serif);
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-}
-
-.point p {
-  color: var(--text-muted);
-  font-size: 0.94rem;
+.page-foot a {
+  margin-left: 0.35rem;
 }
 
 /* ---------------- prose (about) ---------------- */
@@ -226,20 +96,12 @@
   color: var(--text-muted);
 }
 
-/* ---------------- responsive ---------------- */
 @media (max-width: 780px) {
-  .steps,
-  .points {
-    grid-template-columns: 1fr;
-  }
-  .hero-block {
-    padding: 2.5rem 0 1.5rem;
+  .lede {
+    padding: 1.75rem 0 1.5rem;
   }
   .facts {
     grid-template-columns: 1fr;
     text-align: left;
-  }
-  .band {
-    padding: 2.5rem 0;
   }
 }

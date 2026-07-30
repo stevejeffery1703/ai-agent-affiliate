@@ -4,14 +4,11 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="container site-footer">
-  <p class="muted">
-    Recommendations reflect our own research and opinion — always double-check
-    the details before you buy.
-  </p>
   <AffiliateDisclosure compact />
   <p class="footer-links">
-    <a href="/about" class="button button-secondary">About</a>
-    <a href="/privacy" class="button button-secondary">Privacy</a>
+    <a href="/tools">All tools</a>
+    <a href="/about">How we choose</a>
+    <a href="/privacy">Privacy</a>
   </p>
   <p class="muted copyright">&copy; {year} AgentLife</p>
 </footer>
@@ -31,6 +28,10 @@ const year = new Date().getFullYear();
   }
   .footer-links {
     margin-top: 1rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
   }
   .copyright {
     margin-top: 1rem;
