@@ -1,26 +1,63 @@
 ---
 import Base from '../layouts/Base.astro';
+import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
+import '../styles/pages.css';
+import { getCollection } from 'astro:content';
+
+// Counted from the collection, not typed in — the same reason the affiliate
+// disclosure computes itself: a hand-written number goes stale silently.
+const entries = await getCollection('tools');
+const toolCount = entries.length;
+const sourceCount = entries.reduce((n, e) => n + e.data.sources.length, 0);
+const lastVerified = new Date(
+  Math.max(...entries.map((e) => e.data.lastVerified.getTime()))
+).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
 ---
 
 <Base
   title="About — AgentLife"
   description="How AgentLife picks and ranks AI tools: one consistent rubric, refreshed monthly, and independent of who pays us."
 >
-  <main class="container">
+  <main class="page">
     <section class="prose">
+      <p class="eyebrow" style="margin-top:3rem">About</p>
       <h1>How AgentLife works</h1>
       <p class="lead">
         AgentLife helps busy people find the AI tools that actually fit how they
         work — a few quick questions instead of a giant, unranked list.
       </p>
 
+      <div class="facts">
+        <div>
+          <div class="fact-value">{toolCount}</div>
+          <div class="fact-label">tools scored on one rubric</div>
+        </div>
+        <div>
+          <div class="fact-value">{sourceCount}</div>
+          <div class="fact-label">sources cited across them</div>
+        </div>
+        <div>
+          <div class="fact-value">{lastVerified}</div>
+          <div class="fact-label">last full re-check</div>
+        </div>
+      </div>
+
       <h2>How we rank tools</h2>
       <p>
-        Every tool is scored the same way: how good it is at each task, and how
-        much of the work it can take off your hands. We match that against what
-        you tell us — your task, how hands-off you want to be, how much setup
-        you'll tolerate, and whether you want free options — so results are
-        ranked for <em>you</em>, not one-size-fits-all.
+        Every tool is scored against the same rubric: how good it is at each
+        task, and how much of the work it can take off your hands. We match that
+        against what you tell us — your task, how hands-off you want to be, how
+        much setup you'll tolerate, and whether you want free options — so
+        results are picked for <em>you</em>, not one-size-fits-all.
+      </p>
+      <p>
+        We don't publish a match percentage. With a handful of genuinely capable
+        tools per task, a number like &ldquo;93% match&rdquo; implies a precision
+        we can't honestly claim. Instead each recommendation gets a role it
+        earned — <em>our pick</em>, <em>best free option</em>, <em>easiest to
+        start with</em> — and the reason it earned it. When two tools are too
+        close to separate, we say that instead of inventing a winner. When no
+        tool earns a role, we leave it out rather than pad the page.
       </p>
 
       <h2>Kept current</h2>
@@ -31,14 +68,7 @@ import Base from '../layouts/Base.astro';
         date it was last reviewed.
       </p>
 
-      <h2>How we stay honest</h2>
-      <p>
-        Some links are affiliate links: if you sign up through one, we may earn a
-        commission at no extra cost to you. That never buys a better ranking. Fit
-        comes first — an affiliate tool gets only a small nudge that can't
-        override a genuinely better match, and we include excellent tools that
-        have no affiliate program at all.
-      </p>
+      <AffiliateDisclosure />
 
       <h2>Suggest a tool</h2>
       <p>
@@ -51,24 +81,9 @@ import Base from '../layouts/Base.astro';
 </Base>
 
 <style>
+  /* Layout comes from pages.css (.prose / .facts); only the page's own
+     trailing spacing lives here. */
   .prose {
-    max-width: 680px;
-    margin: 2rem auto 0;
-  }
-  .prose h1 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-  .prose h2 {
-    font-size: 1.15rem;
-    margin-top: 2rem;
-    margin-bottom: 0.5rem;
-  }
-  .prose p {
-    margin-bottom: 1rem;
-  }
-  .lead {
-    color: var(--text-muted);
-    font-size: 1.1rem;
+    padding-bottom: 3rem;
   }
 </style>

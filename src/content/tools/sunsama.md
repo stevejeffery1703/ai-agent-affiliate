@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: paid
 websiteUrl: "https://sunsama.com"
+logo: "/assets/logos/sunsama.png"
 accentColor: "#f59e0b"
 tagline: "A calm, intentional daily planner"
 bestFor: "People who want a mindful daily planning ritual"
+caveat: 'No free plan, and it deliberately will not automate for you: the daily planning ritual is the product.'
 features:
   - "Guided daily planning and end-of-day shutdown"
   - "Pulls tasks from all your tools into one place"

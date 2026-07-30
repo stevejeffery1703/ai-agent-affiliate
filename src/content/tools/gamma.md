@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://gamma.app"
+logo: "/assets/logos/gamma.jpg"
 accentColor: "#8b5cf6"
 tagline: "Make a polished deck from a prompt"
 bestFor: "Fast, good-looking decks without fiddling"
+caveat: 'The free tier stamps a Gamma badge on your deck, and its speed costs some polish — Beautiful.ai keeps slides tidier.'
 features:
   - "A full presentation in about 30 seconds"
   - "Layout, text, and images generated for you"

@@ -73,14 +73,17 @@ const tools = defineCollection({
     pricing: z.enum(['free', 'freemium', 'trial', 'paid']),
     websiteUrl: z.string().url(),
     // Human-owned. Omitted until we're in the program; NEVER invented.
-    // When present, the tool earns the (small) monetization nudge.
+    // Presence is DISCLOSED on the result card; it never affects ranking.
     affiliateUrl: z.string().url().optional(),
-    // Rare manual override for the derived monetization weight (0-1).
-    monetizeOverride: z.number().min(0).max(1).optional(),
     logo: z.string().optional(),
     accentColor: z.string().optional(),
     tagline: z.string(),
     bestFor: z.string(),
+    // A short, honest limitation ("...but it can't do X"). Rendered on result
+    // cards: naming the tradeoff is what makes the recommendation believable,
+    // and it's the main thing that separates near-identical tools as the
+    // collection grows. Optional until authored across the collection.
+    caveat: z.string().optional(),
     features: z.array(z.string()).default([]),
     badges: z.array(z.string()).default([]),
     rating: z.number().min(0).max(5).optional(),

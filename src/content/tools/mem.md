@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://get.mem.ai"
+logo: "/assets/logos/mem.png"
 accentColor: "#6d28d9"
 tagline: "Notes that organize themselves"
 bestFor: "People who hate filing and tagging notes"
+caveat: 'You give up manual control: if you like filing things your own way, its automatic organisation will frustrate you.'
 features:
   - "AI files and links your notes automatically"
   - "Fast capture from anywhere"

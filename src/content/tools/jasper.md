@@ -7,9 +7,11 @@ capability:
 ease: medium
 pricing: paid
 websiteUrl: "https://www.jasper.ai"
+logo: "/assets/logos/jasper.png"
 accentColor: "#7c3aed"
 tagline: "On-brand content for marketing teams"
 bestFor: "Marketing teams producing on-brand content at scale"
+caveat: 'No free tier, and priced for marketing teams — hard to justify for one person.'
 features:
   - "Brand voice and style controls"
   - "Campaign and long-form content workflows"

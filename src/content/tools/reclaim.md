@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://reclaim.ai"
+logo: "/assets/logos/reclaim.png"
 accentColor: "#4f46e5"
 tagline: "Defend your focus time automatically"
 bestFor: "Solo users protecting focus time on Google/Outlook"
+caveat: 'It protects focus time well, but it will not plan your whole workload the way Motion does.'
 features:
   - "Auto-schedules tasks, habits, and breaks"
   - "Protects focus time as your calendar shifts"

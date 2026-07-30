@@ -34,36 +34,55 @@ function curve(strengthKey: string, autonomyKey: string): Record<string, number>
   return out;
 }
 
+// "Verified Jul 2026" — provenance shown on the card, so the reader can see how
+// fresh the judgement is without leaving the page.
+function verifiedLabel(d: Date): string {
+  return d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+}
+
 // Turn a validated content-collection entry into the plain object the scoring
-// engine expects. This is where the parametric model + derived monetization +
-// /go redirects are applied — the runtime engine stays unchanged.
+// engine expects. This is where the parametric model + /go redirects are
+// applied.
+//
+// NOTE: monetization deliberately does NOT appear here. Affiliate status is
+// passed through as `isAffiliate` for DISCLOSURE only — it must never influence
+// ranking, which is the one claim about our independence a reader can check.
 export function toEngineTool(entry: CollectionEntry<'tools'>) {
   const d = entry.data;
 
   const capability: Record<string, Record<string, number>> = {};
+  // The raw rubric anchors travel with the tool: role assignment compares
+  // autonomy/strength directly, which the collapsed curve can't express.
+  const rubric: Record<string, { strength: string; autonomy: string }> = {};
   for (const [task, c] of Object.entries(d.capability)) {
-    if (c) capability[task] = curve(c.strength, c.autonomy);
+    if (c) {
+      capability[task] = curve(c.strength, c.autonomy);
+      rubric[task] = { strength: c.strength, autonomy: c.autonomy };
+    }
   }
 
-  // Monetization nudge: derived from having an affiliate link (user's rule),
-  // unless a manual override is set.
-  const priority = d.monetizeOverride ?? (d.affiliateUrl ? 1 : 0);
+  const price = PRICE_MODEL[d.pricing] ?? 'paid';
 
   return {
     id: entry.id,
     name: d.name,
     url: `/go/${entry.id}`, // single indirection point for the affiliate link
-    tasks: Object.keys(capability),
     capability,
+    rubric,
     ease: d.ease,
-    price: PRICE_MODEL[d.pricing] ?? 'paid',
+    price,
     priceLabel: PRICE_LABEL[d.pricing] ?? '',
-    priority,
+    isFree: price === 'free' || price === 'freemium',
+    isAffiliate: Boolean(d.affiliateUrl), // disclosure only — never scored
+    rating: d.rating ?? null,
     logo: d.logo ?? null,
     accentColor: d.accentColor ?? null,
     tagline: d.tagline,
     bestFor: d.bestFor,
+    caveat: d.caveat ?? null,
     features: d.features,
     badges: d.badges,
+    verified: verifiedLabel(d.lastVerified),
+    sources: d.sources,
   };
 }

@@ -7,9 +7,11 @@ capability:
 ease: easy
 pricing: free
 websiteUrl: "https://notebooklm.google.com"
+logo: "/assets/logos/notebooklm.png"
 accentColor: "#1a73e8"
 tagline: "Turn your own documents into a research assistant"
 bestFor: "Synthesizing sources you already have"
+caveat: 'Only answers from documents you upload — it will not search the web for you.'
 features:
   - "Answers grounded in and cited to your uploads"
   - "Summaries, study guides, and briefings"

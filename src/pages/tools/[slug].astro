@@ -1,0 +1,213 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/pages.css';
+import '../../styles/tools.css';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const tools = await getCollection('tools');
+  return tools.map((tool) => ({ params: { slug: tool.id }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+const d = tool.data;
+const { Content } = await render(tool);
+
+// Every other tool we cover in the same area — the natural next click.
+const related = (await getCollection('tools'))
+  .filter((t) => t.id !== tool.id && t.data.category === d.category)
+  .slice(0, 4);
+
+// The rubric in plain language. These are the SAME two judgements the scoring
+// engine consumes, so publishing them is what makes a recommendation auditable
+// rather than something you have to take on faith.
+const STRENGTH = {
+  weak: { n: 1, label: 'Limited' },
+  solid: { n: 2, label: 'Solid' },
+  strong: { n: 3, label: 'Strong' },
+  best: { n: 4, label: 'Best in class' },
+};
+const AUTONOMY = {
+  suggest: 'suggests options, you do the work',
+  assist: 'works alongside you',
+  most: 'does most of it, you approve',
+  auto: 'handles it end to end',
+};
+const PRICING = {
+  free: 'Free',
+  freemium: 'Free plan available',
+  trial: 'Free trial',
+  paid: 'Paid only',
+};
+const EASE = { easy: 'Works out of the box', medium: 'Some setup', advanced: 'Invest time' };
+
+const capabilities = Object.entries(d.capability).filter(([, v]) => v);
+const verified = d.lastVerified.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+const initial = d.name.trim().charAt(0).toUpperCase();
+---
+
+<Base
+  title={`${d.name} review — ${d.tagline} | AgentLife`}
+  description={`${d.name}: ${d.bestFor}. How it scores on our rubric, what it's best at, what to watch for, and the sources we checked.`}
+>
+  <main class="page tool-page">
+    <p class="crumb">
+      <a href="/tools">All tools</a> &nbsp;/&nbsp; <span>{d.category}</span>
+    </p>
+
+    <div class="tool-head">
+      {
+        d.logo ? (
+          <img src={d.logo} alt="" width="52" height="52" />
+        ) : (
+          <span class="tool-logo-fallback" style={`background:${d.accentColor || '#15603d'}`}>
+            {initial}
+          </span>
+        )
+      }
+      <h1>{d.name}</h1>
+    </div>
+
+    <p class="tool-tagline">{d.tagline}</p>
+
+    {
+      d.badges.length > 0 && (
+        <div class="tool-badges">
+          {d.badges.map((b) => (
+            <span class="badge">{b}</span>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="tool-facts">
+      <div>
+        <div class="tool-fact-label">Pricing</div>
+        <div class="tool-fact-value">{PRICING[d.pricing]}</div>
+      </div>
+      <div>
+        <div class="tool-fact-label">Getting started</div>
+        <div class="tool-fact-value">{EASE[d.ease]}</div>
+      </div>
+      <div>
+        <div class="tool-fact-label">Main use</div>
+        <div class="tool-fact-value">{d.category}</div>
+      </div>
+      <div>
+        <div class="tool-fact-label">Last checked</div>
+        <div class="tool-fact-value">{verified}</div>
+      </div>
+    </div>
+
+    <section class="tool-section tool-take">
+      <h2>Our take</h2>
+      <Content />
+      <p><strong>Best for:</strong> {d.bestFor}.</p>
+      {d.caveat && <p class="tool-caveat"><strong>Worth knowing:</strong> {d.caveat}</p>}
+    </section>
+
+    <section class="tool-section">
+      <h2>How it scores</h2>
+      <p class="rubric-desc" style="margin-bottom:1rem">
+        Every tool is judged on the same two questions, for each kind of work it
+        does: how good it is, and how much it can handle without you.
+      </p>
+      <div class="rubric">
+        {
+          capabilities.map(([task, c]) => (
+            <div class="rubric-row">
+              <span class="rubric-task">{task}</span>
+              <span
+                class="meter"
+                role="img"
+                aria-label={`${STRENGTH[c.strength].label} at ${task}`}
+              >
+                {[1, 2, 3, 4].map((i) => (
+                  <span class:list={{ on: i <= STRENGTH[c.strength].n }} />
+                ))}
+              </span>
+              <span class="rubric-desc">
+                {STRENGTH[c.strength].label} — {AUTONOMY[c.autonomy]}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      d.features.length > 0 && (
+        <section class="tool-section">
+          <h2>What you get</h2>
+          <ul class="tool-list">
+            {d.features.map((f) => (
+              <li>{f}</li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="tool-section tool-sources">
+      <h2>How we checked</h2>
+      <p>
+        Facts on this page were verified in {verified}
+        {d.sources.length > 0 ? ', against:' : '.'}
+      </p>
+      {
+        d.sources.length > 0 && (
+          <ul>
+            {d.sources.map((s) => (
+              <li>
+                <a href={s} target="_blank" rel="noopener nofollow">
+                  {new URL(s).hostname.replace(/^www\./, '')}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </section>
+
+    <div class="tool-cta">
+      <a href={`/go/${tool.id}`} target="_blank" rel="sponsored noopener" class="button button-primary">
+        Visit {d.name}
+      </a>
+      <small>
+        {
+          d.affiliateUrl
+            ? 'This is an affiliate link — we may earn a commission at no extra cost to you. It has no effect on how we rank tools.'
+            : 'We earn nothing if you click this. We are not in an affiliate programme with them.'
+        }
+      </small>
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="tool-section">
+          <h2>Also for {d.category}</h2>
+          <div class="related-grid">
+            {related.map((t) => (
+              <a class="dir-card" href={`/tools/${t.id}`}>
+                <span class="dir-card-head">
+                  {t.data.logo ? (
+                    <img src={t.data.logo} alt="" width="28" height="28" />
+                  ) : (
+                    <span
+                      class="tool-logo-fallback"
+                      style={`background:${t.data.accentColor || '#15603d'}`}
+                    >
+                      {t.data.name.trim().charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  <h2>{t.data.name}</h2>
+                </span>
+                <p>{t.data.bestFor}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </main>
+</Base>

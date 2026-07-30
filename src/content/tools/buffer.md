@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://buffer.com"
+logo: "/assets/logos/buffer.png"
 accentColor: "#2c4bff"
 tagline: "Plan and publish social content with AI"
 bestFor: "Small businesses and creators managing social"
+caveat: 'Built for solo creators and small teams; if you need multi-step approvals or deeper analytics, Hootsuite covers more.'
 features:
   - "AI Assistant for captions and content ideas"
   - "Schedule across all major platforms"

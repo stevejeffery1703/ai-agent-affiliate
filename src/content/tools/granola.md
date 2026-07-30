@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.granola.ai"
+logo: "/assets/logos/granola.png"
 accentColor: "#000000"
 tagline: "Bot-free notes for back-to-back meetings"
 bestFor: "Solo users who don't want a bot joining calls"
+caveat: 'It works from notes you type yourself, so it is less useful if you would rather not take any during a call.'
 features:
   - "Transcribes without a visible meeting bot"
   - "Turns your rough notes into full summaries"

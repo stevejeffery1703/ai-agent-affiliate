@@ -6,9 +6,11 @@ capability:
 ease: medium
 pricing: paid
 websiteUrl: "https://www.hootsuite.com"
+logo: "/assets/logos/hootsuite.png"
 accentColor: "#1a1a1a"
 tagline: "Social media management at scale"
 bestFor: "Teams managing many social accounts"
+caveat: 'Pricier and heavier than Buffer, and aimed at marketing teams rather than solo creators.'
 features:
   - "OwlyWriter AI for captions and repurposing"
   - "AI-assisted content calendar and scheduling"

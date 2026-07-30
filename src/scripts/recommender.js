@@ -5,9 +5,13 @@
 // <script type="application/json" id="tools-data"> block.
 // ==========================================
 
-import { scoreTools } from './engine.js';
+import { shortlist, assignRoles, buildReasons, CONTROL_SCOPE } from './engine.js';
 
 let TOOLS = [];
+
+// How many runners-up to show before handing off to the directory. Keeps the
+// page readable now and bounded as the collection grows.
+const RUNNERS_SHOWN = 6;
 
 const controlLabels = {
   1: 'I just want suggestions',
@@ -22,6 +26,15 @@ const easeLabels = {
   3: 'Invest time (more complex; most powerful)',
 };
 
+// Authored content is trusted, but it still goes through innerHTML — an
+// apostrophe or angle bracket in a tagline shouldn't be able to break markup.
+function esc(s) {
+  return String(s ?? '').replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]
+  );
+}
+
 export function initRecommender() {
   const runBtn = document.getElementById('runBtn');
   if (!runBtn) return; // not on the recommender page
@@ -33,12 +46,17 @@ export function initRecommender() {
     TOOLS = [];
   }
 
-  // Icon grid: single-select
+  // Icon grid: single-select. aria-pressed is kept in step with .active so the
+  // selection is exposed to assistive tech, not just conveyed by colour.
   const iconOptions = document.querySelectorAll('.icon-option');
   iconOptions.forEach((btn) => {
     btn.addEventListener('click', () => {
-      iconOptions.forEach((b) => b.classList.remove('active'));
+      iconOptions.forEach((b) => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
     });
   });
 
@@ -65,205 +83,215 @@ function runRecommendation() {
   const activeIcon = document.querySelector('.icon-option.active');
 
   const user = {
-    tasks: [activeIcon ? activeIcon.dataset.value : null],
-    control: mapControl(document.getElementById('control').value),
+    task: activeIcon ? activeIcon.dataset.value : null,
+    control: Number(document.getElementById('control').value),
     ease: mapEase(document.getElementById('ease').value),
-    price: document.getElementById('price').checked ? 'free' : 'all',
+    freeOnly: document.getElementById('price').checked,
   };
 
-  const freeResults = scoreTools({ ...user, price: 'free' }, TOOLS);
-  const allResults = scoreTools({ ...user, price: 'all' }, TOOLS);
+  renderResults(user);
 
-  const mainResults = (user.price === 'free' ? freeResults : allResults).slice(0, 11);
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  renderResults(mainResults, user, 'results');
-
-  document
-    .getElementById('results')
-    .scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  // Upsell block only when the user restricted to free tools
-  if (user.price === 'free') {
-    const freeIds = new Set(freeResults.map((t) => t.id));
-    const paidOnly = allResults.filter(
-      (tool) => !freeIds.has(tool.id) && tool.price === 'paid'
-    );
-    renderUpgradeResults(paidOnly.slice(0, 3), freeResults);
-  } else {
-    document.getElementById('upgrade-results').innerHTML = '';
-  }
+  // Upsell only makes sense when the user restricted themselves to free tools.
+  if (user.freeOnly) renderUpgrade(user);
+  else document.getElementById('upgrade-results').innerHTML = '';
 }
 
 // Logo, or a colored initial when a tool has no logo yet.
 function logoHTML(tool) {
   if (tool.logo) {
-    return `<img src="${tool.logo}" alt="${tool.name} logo" class="tool-logo">`;
+    return `<img src="${esc(tool.logo)}" alt="" class="tool-logo">`;
   }
   const initial = (tool.name || '?').trim().charAt(0).toUpperCase();
   const color = tool.accentColor || '#10b981';
-  return `<span class="tool-logo tool-logo-fallback" style="background:${color}">${initial}</span>`;
+  return `<span class="tool-logo tool-logo-fallback" style="background:${esc(color)}">${esc(initial)}</span>`;
 }
 
-function renderResults(results, user, containerId = 'results') {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
+// Provenance: when we last checked, and what we checked against. This is the
+// site's whole claim to independence, so it belongs on the card, not just on
+// the About page.
+function provenanceHTML(tool) {
+  const sources = tool.sources?.length
+    ? `<details class="pick-sources">
+         <summary>${tool.sources.length} source${tool.sources.length > 1 ? 's' : ''}</summary>
+         <ul>${tool.sources
+           .map(
+             (s) =>
+               `<li><a href="${esc(s)}" target="_blank" rel="noopener nofollow">${esc(
+                 new URL(s).hostname.replace(/^www\./, '')
+               )}</a></li>`
+           )
+           .join('')}</ul>
+       </details>`
+    : '';
+  const affiliate = tool.isAffiliate
+    ? '<span class="pick-disclosure" title="We may earn a commission. It does not affect ranking.">affiliate link</span>'
+    : '';
+  return `<p class="pick-meta">
+      ${tool.priceLabel ? `<span>${esc(tool.priceLabel)}</span>` : ''}
+      <span>Verified ${esc(tool.verified)}</span>
+      ${sources}
+      ${affiliate}
+    </p>`;
+}
 
-  if (!results.length) {
-    container.innerHTML =
-      '<p class="best-for">No tools match those choices yet — try turning off "free only" or picking a different task.</p>';
+function reasonsHTML(reasons) {
+  const main = reasons.filter((r) => r.kind !== 'caveat');
+  const caveat = reasons.find((r) => r.kind === 'caveat');
+  return `
+    <ul class="pick-reasons">
+      ${main.map((r) => `<li class="reason-${r.kind}">${esc(r.text)}</li>`).join('')}
+    </ul>
+    ${caveat ? `<p class="pick-caveat"><strong>Worth knowing:</strong> ${esc(caveat.text)}</p>` : ''}
+  `;
+}
+
+function pickHTML(entry, ranked, user, isPrimary, shownIds) {
+  const { tool, role } = entry;
+  const scope = isPrimary
+    ? `<p class="pick-scope">For ${esc(user.task)}, when ${esc(CONTROL_SCOPE[user.control])}.</p>`
+    : '';
+  return `
+    <article class="pick${isPrimary ? ' pick-primary' : ''}">
+      <span class="pick-role">${esc(role)}</span>
+      <div class="pick-head">
+        ${logoHTML(tool)}
+        <h3>${esc(tool.name)}</h3>
+      </div>
+      ${scope}
+      <p class="pick-tagline">${esc(tool.tagline)}</p>
+      ${reasonsHTML(buildReasons(entry, ranked, user, shownIds))}
+      ${provenanceHTML(tool)}
+      <div class="pick-actions">
+        <a href="${esc(tool.url)}" target="_blank" rel="sponsored noopener" class="button button-primary">
+          Visit ${esc(tool.name)}
+        </a>
+        <a href="/tools/${esc(tool.id)}" class="button button-secondary">Read our take</a>
+      </div>
+    </article>
+  `;
+}
+
+function renderResults(user) {
+  const container = document.getElementById('results');
+
+  if (!user.task) {
+    container.innerHTML = '<p class="rec-empty">Pick a task above to see recommendations.</p>';
     return;
   }
 
-  const TOP = 3;
-  const top = results.slice(0, TOP);
-  const rest = results.slice(TOP);
+  const { ranked, capableN, eligibleN } = shortlist(user, TOOLS);
 
-  // Top matches — full cards
-  const grid = document.createElement('div');
-  grid.className = 'results-grid';
-
-  top.forEach((tool, index) => {
-    const label = getLabel(tool.percentage);
-    const el = document.createElement('div');
-    el.className = 'result-card';
-    if (index === 0) el.classList.add('featured');
-
-    const featuresHTML = tool.features?.map((f) => `<li>${f}</li>`).join('') || '';
-    const badgesHTML = tool.badges?.map((b) => `<span class="badge">${b}</span>`).join('') || '';
-    const why = getWhyText(user, tool);
-    const priceHTML = tool.priceLabel ? `<p class="price">${tool.priceLabel}</p>` : '';
-
-    el.innerHTML = `
-      ${index === 0 ? '<span class="featured-badge">Top match</span>' : ''}
-      <div class="card-header">
-        ${logoHTML(tool)}
-        <h3>${tool.name}</h3>
-      </div>
-      <div class="score-bar"><div class="score-fill" style="width:${tool.percentage}%"></div></div>
-      <p><strong>${tool.percentage}% match</strong> &bull; ${label}</p>
-      <p class="tagline">${tool.tagline}</p>
-      ${priceHTML}
-      <p class="why-title"><strong>Why this fits you:</strong></p>
-      <ul class="why-list">${why.map((r) => `<li>${r}</li>`).join('')}</ul>
-      <p class="best-for">${tool.bestFor}</p>
-      <ul class="features">${featuresHTML}</ul>
-      ${badgesHTML ? `<div class="badges">${badgesHTML}</div>` : ''}
-      <a href="${tool.url}" target="_blank" rel="sponsored noopener" class="button button-primary">Try ${tool.name}</a>
-    `;
-
-    grid.appendChild(el);
-  });
-
-  container.appendChild(grid);
-
-  // Also worth considering — compact chips (gives the top picks context)
-  if (rest.length) {
-    const also = document.createElement('div');
-    also.className = 'also-considered';
-    also.innerHTML = '<h3 class="also-title">Also worth considering</h3>';
-
-    const alsoGrid = document.createElement('div');
-    alsoGrid.className = 'also-grid';
-
-    rest.forEach((tool) => {
-      const chip = document.createElement('a');
-      chip.className = 'also-card';
-      chip.href = tool.url;
-      chip.target = '_blank';
-      chip.rel = 'sponsored noopener';
-      chip.innerHTML = `
-        ${logoHTML(tool)}
-        <span class="also-info">
-          <span class="also-name">${tool.name}</span>
-          <span class="also-meta">${tool.percentage}% match${tool.priceLabel ? ' &middot; ' + tool.priceLabel : ''}</span>
-        </span>
-      `;
-      alsoGrid.appendChild(chip);
-    });
-
-    also.appendChild(alsoGrid);
-    container.appendChild(also);
+  if (!ranked.length) {
+    container.innerHTML = `<p class="rec-empty">
+        None of the ${capableN} ${esc(user.task)} tools we track have a free plan.
+        Turn off &ldquo;free only&rdquo; to see them.
+      </p>`;
+    return;
   }
+
+  const { roles, ties } = assignRoles(ranked, user);
+  const shown = new Set(roles.map((r) => r.tool.id));
+  const runners = ranked.filter((t) => !shown.has(t.id));
+  // Anything already visible as a pick or a named tie shouldn't be re-offered
+  // as the "pick this instead" contrast.
+  const shownIds = new Set([...shown, ...ties.map((t) => t.id)]);
+
+  // Honest framing of the shortlist: what we looked at, and what got filtered.
+  const filtered =
+    user.freeOnly && eligibleN < capableN
+      ? ` <span class="rec-filter">${eligibleN} of them have a free plan.</span>`
+      : '';
+
+  const tiesHTML = ties.length
+    ? `<p class="rec-ties">Too close to call between our pick and
+         ${ties.map((t) => esc(t.name)).join(' and ')} — any of them would serve you well.</p>`
+    : '';
+
+  const runnersHTML = runners.length
+    ? `<div class="runners">
+         <h3 class="runners-title">Also considered</h3>
+         <div class="runners-grid">
+           ${runners
+             .slice(0, RUNNERS_SHOWN)
+             .map(
+               // Runners-up go to our own page, not straight off-site: these are
+               // lower-intent clicks where the useful next step is reading, not
+               // signing up.
+               (t) => `
+             <a class="runner" href="/tools/${esc(t.id)}">
+               ${logoHTML(t)}
+               <span class="runner-info">
+                 <span class="runner-name">${esc(t.name)}</span>
+                 <span class="runner-best">${esc(t.bestFor)}</span>
+               </span>
+             </a>`
+             )
+             .join('')}
+         </div>
+         ${
+           runners.length > RUNNERS_SHOWN
+             ? `<p class="runners-more">
+                  + ${runners.length - RUNNERS_SHOWN} more we compared —
+                  <a href="/tools">browse all ${TOOLS.length} tools</a>.
+                </p>`
+             : ''
+         }
+       </div>`
+    : '';
+
+  container.innerHTML = `
+    <p class="rec-summary">
+      We compared <strong>${capableN}</strong> tools that do ${esc(user.task)}.${filtered}
+      <a href="/about">How we choose</a>
+    </p>
+    <div class="picks">
+      ${roles.map((r, i) => pickHTML(r, ranked, user, i === 0, shownIds)).join('')}
+    </div>
+    ${tiesHTML}
+    ${runnersHTML}
+  `;
 }
 
-function renderUpgradeResults(results, freeResults) {
+// What they'd gain by lifting the free-only restriction — framed as a real
+// comparison, not a score delta.
+function renderUpgrade(user) {
   const container = document.getElementById('upgrade-results');
   container.innerHTML = '';
-  if (!results.length) return;
 
-  const bestFree = freeResults[0]?.percentage || 0;
+  const free = shortlist({ ...user, freeOnly: true }, TOOLS).ranked;
+  const all = shortlist({ ...user, freeOnly: false }, TOOLS).ranked;
+  if (!free.length || !all.length) return;
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'upgrade-box';
-  wrapper.innerHTML = `
-    <h2 style="margin-bottom:0.5rem;">Want better results?</h2>
-    <p style="margin-bottom:1.5rem; color:var(--text-muted);">
-      If you're open to paid tools, you could get significantly better matches.
-      Your best free result was <strong>${bestFree}%</strong>.
-    </p>
-  `;
+  const bestFree = free[0];
+  const betterPaid = all.filter((t) => !t.isFree && t.score > bestFree.score).slice(0, 2);
+  if (!betterPaid.length) return;
 
-  const grid = document.createElement('div');
-  grid.className = 'results-grid upgrade-grid';
-
-  results.forEach((tool) => {
-    const gain = tool.percentage - bestFree;
-    const priceHTML = tool.priceLabel ? `<p class="price">${tool.priceLabel}</p>` : '';
-    const el = document.createElement('div');
-    el.className = 'result-card';
-    el.innerHTML = `
-      <div class="card-header">
-        ${logoHTML(tool)}
-        <h3>${tool.name}</h3>
+  container.innerHTML = `
+    <div class="upgrade-box">
+      <h2>If you'd consider paying</h2>
+      <p class="upgrade-intro">
+        ${betterPaid.length === 1 ? 'One paid tool scores' : 'These paid tools score'}
+        higher for what you asked for than the best free option
+        (<strong>${esc(bestFree.name)}</strong>).
+      </p>
+      <div class="runners-grid">
+        ${betterPaid
+          .map(
+            (t) => `
+          <a class="runner" href="/tools/${esc(t.id)}">
+            ${logoHTML(t)}
+            <span class="runner-info">
+              <span class="runner-name">${esc(t.name)}</span>
+              <span class="runner-best">${esc(t.bestFor)}</span>
+            </span>
+          </a>`
+          )
+          .join('')}
       </div>
-      <div class="score-bar"><div class="score-fill" style="width:${tool.percentage}%"></div></div>
-      <p><strong>${tool.percentage}% match</strong> ${gain > 0 ? `(+${gain}% better)` : ''}</p>
-      <p class="tagline">${tool.tagline}</p>
-      ${priceHTML}
-      <p class="best-for">${tool.bestFor}</p>
-      <a href="${tool.url}" target="_blank" rel="sponsored noopener" class="button button-primary">Try ${tool.name}</a>
-    `;
-    grid.appendChild(el);
-  });
-
-  wrapper.appendChild(grid);
-  container.appendChild(wrapper);
-}
-
-function getWhyText(user, tool) {
-  const task = user.tasks?.[0];
-  const level = user.control;
-  const parts = [];
-
-  if (task && tool.capability?.[task]) {
-    parts.push(`Strong match for ${task} tasks`);
-  }
-
-  if (user.ease && tool.ease && user.ease === tool.ease) {
-    if (tool.ease === 'easy') parts.push('Very easy to get started with');
-    else if (tool.ease === 'medium') parts.push('Balanced between power and ease of use');
-    else parts.push('Powerful with advanced capabilities');
-  }
-
-  if (task && level && tool.capability?.[task]) {
-    const score = tool.capability[task][String(level)];
-    if (score >= 0.85) parts.push('Handles this task extremely well');
-    else if (score >= 0.7) parts.push('Reliably performs this task');
-  }
-
-  return parts.length ? parts : ['A solid option based on your preferences.'];
-}
-
-function getLabel(score) {
-  if (score >= 90) return 'Excellent fit';
-  if (score >= 75) return 'Great match';
-  if (score >= 60) return 'Good option';
-  return 'Less ideal';
-}
-
-function mapControl(value) {
-  const map = { 1: 1, 2: 2, 3: 3, 4: 4 };
-  return map[value] || 2;
+    </div>
+  `;
 }
 
 function mapEase(value) {

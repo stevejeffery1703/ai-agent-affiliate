@@ -7,9 +7,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.copy.ai"
+logo: "/assets/logos/copy-ai.png"
 accentColor: "#2563eb"
 tagline: "AI for sales and marketing copy"
 bestFor: "Teams chaining outreach and short-form copy"
+caveat: 'Cheaper than Jasper, but its brand-voice controls are not as strong — which is why Jasper still wins when brand consistency matters most.'
 features:
   - "Templates for ads, emails, and posts"
   - "Go-to-market workflows for revenue teams"

@@ -12,6 +12,7 @@ Then, for every tool file in `src/content/tools/` (work through them by category
 1. Web-search to verify current facts: is it still operating? Current pricing model (`free`/`freemium`/`trial`/`paid`)? Any major change to what it does or how it's positioned? Check against 1–2 real, current sources.
 2. Update any fields that changed (tagline, bestFor, features, pricing, and `capability` only if the tool's abilities materially shifted). Re-apply the `strength`/`autonomy` rubric consistently — don't let scores drift without a documented reason.
 3. Set `lastVerified` to today's date and replace `sources` with the URLs you actually checked this pass.
+   Re-read the `caveat` while you're here: is it still true, and still the most useful drawback to name? Caveats go stale faster than features — a missing free tier gets added, a rival catches up. Rewrite it if the sources no longer support it.
 4. If a tool looks discontinued, renamed, or acquired-and-shut, **do not delete it silently** — list it under "Flagged" with what you found and a recommendation.
 5. **Never invent or modify `affiliateUrl`.** Leave it exactly as it is.
 6. Propose 2–5 new tools worth adding (name, category, one-line why) — but don't author them here; that's `/add-tool`.

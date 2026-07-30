@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: paid
 websiteUrl: "https://www.beautiful.ai"
+logo: "/assets/logos/beautiful-ai.png"
 accentColor: "#7c3aed"
 tagline: "Presentations that design themselves"
 bestFor: "Polished, on-brand decks with smart templates"
+caveat: 'No free plan, and it is slower to a first draft than Gamma — that is the trade for keeping every slide on-brand.'
 features:
   - "Smart templates that auto-adjust the layout"
   - "Team branding and shared slide libraries"

@@ -7,9 +7,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.canva.com"
+logo: "/assets/logos/canva.png"
 accentColor: "#00c4cc"
 tagline: "Design anything, now with AI"
 bestFor: "All-in-one design for non-designers"
+caveat: 'Not the best at any single thing — specialists beat it on image generation, video and slides.'
 features:
   - "Templates for social, docs, and slides"
   - "Magic Studio AI image and text tools"

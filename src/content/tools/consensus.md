@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://consensus.app"
+logo: "/assets/logos/consensus.png"
 accentColor: "#0ea5e9"
 tagline: "Evidence-based answers from science"
 bestFor: "Checking claims against peer-reviewed research"
+caveat: 'It only searches peer-reviewed papers, so it is the wrong tool for anything that is not a research question.'
 features:
   - "Answers grounded in scientific papers"
   - "Shows the consensus across studies"

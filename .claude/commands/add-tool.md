@@ -13,7 +13,9 @@ Then:
 1. Web-search to confirm "$ARGUMENTS" exists and gather current facts: what it does, which of the 12 taxonomy tasks it genuinely covers, its pricing model, key features, and positioning. Collect 1–2 real source URLs.
 2. Score its `capability` with the rubric (`strength` + `autonomy` for each task it covers), grounded in the sources and consistent with how similar tools are already scored.
 3. Author `src/content/tools/<slug>.md` matching the schema exactly (`<slug>` = a lowercase, hyphenated name). **Leave `affiliateUrl` out** — a human adds that later. Set `lastVerified` to today, cite your sources, and pick an `accentColor` from the tool's brand.
-4. Run `npm run build` and fix any validation errors.
-5. Show the new file and confirm it builds. **Do not commit** — leave it for review.
+   **Include a `caveat`** — one true, sourced limitation (see MAINTENANCE.md). Every tool has one; a tool with no drawback means you haven't researched it hard enough.
+4. Run `node scripts/fetch-logos.mjs` to download the tool's logo locally and write its `logo:` field. Check the reported size — under 64px will look soft; if nothing usable is found, leave `logo` out and the coloured-initial fallback is used.
+5. Run `npm run build` and fix any validation errors.
+6. Show the new file and confirm it builds. **Do not commit** — leave it for review.
 
 If the tool doesn't clearly fit any of the 12 tasks, or you can't verify it exists, say so instead of inventing an entry.

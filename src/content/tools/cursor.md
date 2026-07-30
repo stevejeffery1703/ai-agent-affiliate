@@ -6,9 +6,11 @@ capability:
 ease: medium
 pricing: freemium
 websiteUrl: "https://cursor.com"
+logo: "/assets/logos/cursor.png"
 accentColor: "#000000"
 tagline: "The AI code editor developers love"
 bestFor: "Daily coding with an AI pair programmer"
+caveat: 'It is a separate editor you have to move into; if you are happy where you are, Copilot bolts onto your current one instead.'
 features:
   - "AI-native editor built on VS Code"
   - "Agentic, multi-file edits"

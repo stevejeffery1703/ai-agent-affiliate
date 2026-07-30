@@ -6,9 +6,11 @@ capability:
 ease: medium
 pricing: paid
 websiteUrl: "https://www.midjourney.com"
+logo: "/assets/logos/midjourney.png"
 accentColor: "#111827"
 tagline: "The gold standard for AI image quality"
 bestFor: "The most striking, artistic image generation"
+caveat: 'No permanent free tier, so you are subscribing before you have properly tried it.'
 features:
   - "Best-in-class artistic quality"
   - "Fine stylistic and compositional control"

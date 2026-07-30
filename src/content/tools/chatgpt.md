@@ -13,6 +13,7 @@ logo: "/assets/logos/chatgpt.png"
 accentColor: "#10a37f"
 tagline: "The all-purpose AI assistant"
 bestFor: "Writing, research, and everyday AI help"
+caveat: 'The free tier caps how much you can use the newest models, so heavy users end up on the paid plan.'
 features:
   - "Drafts and edits almost any kind of content"
   - "Answers questions and runs deep research"

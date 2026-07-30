@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://github.com/features/copilot"
+logo: "/assets/logos/github-copilot.png"
 accentColor: "#000000"
 tagline: "AI pair programmer in your IDE"
 bestFor: "In-editor code completion across languages"
+caveat: 'The easiest to adopt, but less autonomous than Cursor or Claude Code once work spans several files.'
 features:
   - "Inline suggestions as you type"
   - "Chat and agent modes"

@@ -6,9 +6,11 @@ capability:
 ease: medium
 pricing: freemium
 websiteUrl: "https://zapier.com"
+logo: "/assets/logos/zapier.png"
 accentColor: "#ff4f00"
 tagline: "Connect your apps and automate the busywork"
 bestFor: "No-code automation across the most apps"
+caveat: 'Per-task pricing climbs quickly at volume — Make gives you far more operations for the same money.'
 features:
   - "Connects thousands of apps"
   - "Multi-step automated workflows"

@@ -6,6 +6,13 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 4321
+    },
+    {
+      "// note": "Serves the built dist/. Run `npm run build` first. Needed because the dev server cannot always fetch webfonts on this network, so typography only renders truthfully in the production build.",
+      "name": "prod-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview", "--", "--port", "4322"],
+      "port": 4322
     }
   ]
 }

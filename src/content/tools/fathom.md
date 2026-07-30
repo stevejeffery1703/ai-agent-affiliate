@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://fathom.video"
+logo: "/assets/logos/fathom.png"
 accentColor: "#5b5bd6"
 tagline: "Automatic notes for every meeting"
 bestFor: "Free, hands-off meeting notes"
+caveat: 'It joins your calls as a visible bot, which is not always welcome in client meetings — Granola stays invisible.'
 features:
   - "Records, transcribes, and summarizes calls automatically"
   - "Pulls out action items in ~30 seconds after the call"

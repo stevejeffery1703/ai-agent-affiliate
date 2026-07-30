@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.descript.com"
+logo: "/assets/logos/descript.svg"
 accentColor: "#2563eb"
 tagline: "Edit video and podcasts like a document"
 bestFor: "Editing recorded, speech-heavy content"
+caveat: 'Built for talking-head and screen recordings — not the tool for cinematic or heavily-effected video.'
 features:
   - "Edit audio and video by editing the transcript"
   - "AI voices, filler-word removal, and overdub"

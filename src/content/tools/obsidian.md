@@ -6,9 +6,11 @@ capability:
 ease: advanced
 pricing: freemium
 websiteUrl: "https://obsidian.md"
+logo: "/assets/logos/obsidian.svg"
 accentColor: "#7c3aed"
 tagline: "A local-first second brain"
 bestFor: "Power users who want to own their notes"
+caveat: 'AI is not built in — it arrives through community plugins, which means setup and upkeep are on you.'
 features:
   - "Plain-text Markdown files you fully control"
   - "Bidirectional links and graph view"

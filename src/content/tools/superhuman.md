@@ -10,6 +10,7 @@ logo: "/assets/logos/superhuman.png"
 accentColor: "#000000"
 tagline: "The fastest email experience ever made"
 bestFor: "High-volume email users who live in their inbox"
+caveat: 'Premium-priced, and only worth it if email is genuinely a big part of your day.'
 features:
   - "Blazing-fast, keyboard-driven workflow"
   - "AI triage, summaries, and drafting"

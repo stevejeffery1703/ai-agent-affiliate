@@ -6,9 +6,11 @@ capability:
 ease: medium
 pricing: paid
 websiteUrl: "https://www.lindy.ai"
+logo: "/assets/logos/lindy.png"
 accentColor: "#6366f1"
 tagline: "AI agents that do the work for you"
 bestFor: "Autonomous agents for email, scheduling, and more"
+caveat: 'No free tier, and it connects to far fewer apps than Zapier: you are buying autonomy, not breadth.'
 features:
   - "Prebuilt AI 'employees' that run tasks end to end"
   - "Connects to your existing accounts"

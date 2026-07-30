@@ -6,9 +6,11 @@ capability:
 ease: advanced
 pricing: paid
 websiteUrl: "https://www.anthropic.com/claude-code"
+logo: "/assets/logos/claude-code.png"
 accentColor: "#d97757"
 tagline: "An AI coding agent in your terminal"
 bestFor: "Developers who want autonomous, multi-file coding"
+caveat: 'Terminal-based and aimed at developers: there is no graphical interface, and no free tier to try it on.'
 features:
   - "Understands and edits whole codebases"
   - "Runs commands and multi-step tasks on its own"

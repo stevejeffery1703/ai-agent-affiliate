@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.bardeen.ai"
+logo: "/assets/logos/bardeen.svg"
 accentColor: "#6d28d9"
 tagline: "Automate the busywork in your browser"
 bestFor: "Automating repetitive web tasks and scraping"
+caveat: 'It runs as a Chrome extension, so it suits personal, on-demand workflows rather than the always-on server-side automation Zapier and Make handle.'
 features:
   - "Runs as a Chrome extension in your browser"
   - "Automates clicks, scraping, and data entry"

@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://otter.ai"
+logo: "/assets/logos/otter.png"
 accentColor: "#0091ff"
 tagline: "Automatic transcription and meeting notes"
 bestFor: "Transcribing meetings, interviews, and lectures"
+caveat: 'A dependable old hand, but newer rivals now rate higher: Fathom and Granola both score better for summary quality.'
 features:
   - "Live transcription with speaker identification"
   - "Automated summaries and action items"

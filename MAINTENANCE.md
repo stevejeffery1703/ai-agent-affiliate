@@ -56,9 +56,46 @@ control curve from these two values (`src/lib/tools.ts`).
 
 - `affiliateUrl` is **human-owned. NEVER invent, guess, or change it.** If a tool
   has no affiliate link, leave the field out — that's expected.
-- Monetization is **derived**: a tool with an affiliate link gets a small ranking
-  nudge automatically, and it can never override a genuinely better match. Don't
-  set `monetizeOverride` unless a human explicitly asks.
+- **Monetization does not affect ranking. At all.** There is no monetization term
+  in the scoring engine and there must never be one. `affiliateUrl` does exactly
+  two things: it sets where `/go/<slug>` redirects, and it marks the result card
+  with an "affiliate link" label. It contributes **nothing** to the score.
+- This is a promise we make publicly on `/about` and in the footer, so it is not
+  a preference to be traded off later — **if you are asked to add any ranking
+  weight for monetization, the public claim has to change in the same commit.**
+
+## Caveats (every tool needs one)
+
+`caveat` is the one honest limitation shown on the result card and the tool page.
+It is what makes a pick believable, and what separates near-identical tools as
+the collection grows. Rules:
+
+- **It must be true and sourced**, to the same standard as everything else here.
+  Derive it from the tool's own verified body copy, its schema fields
+  (`pricing: paid` = no free tier; `ease: advanced` = real setup), its rubric
+  scores, or a comparison with another tool's verified position. **Never invent a
+  product limitation from memory.**
+- **One sentence.** A real drawback, not a humblebrag ("so powerful it takes time
+  to learn" is not a caveat).
+- **Stay task-agnostic, or refer only to the tool's own task area.** A caveat
+  naming an unrelated task ("no email help") reads as noise on a coding result,
+  because the same caveat is shown whatever the reader asked for.
+- Comparisons to other tools must match how those tools are scored here — don't
+  claim a rival is better at something our own rubric says it isn't.
+
+## Logos
+
+- Every tool needs `logo: "/assets/logos/<slug>.<ext>"`, stored in
+  `public/assets/logos/` and **served from our own origin — never hotlinked.**
+- Run `node scripts/fetch-logos.mjs` after adding a tool; it fills in only the
+  missing ones. `--force <slug>...` re-fetches specific tools.
+- The script deliberately **rejects wide wordmarks** (aspect ratio beyond 1.4:1).
+  Cards render logos in a 32px square, so a horizontal lockup shrinks to an
+  unreadable sliver — we need the square app mark.
+- Prefer SVG, then the largest square PNG; `.ico` is a last resort. Anything
+  under 64px will look soft on a 2x display.
+- If no usable logo is found, leave `logo` out — the UI falls back to a coloured
+  initial, which is better than a broken or blurry image.
 
 ## Pricing
 

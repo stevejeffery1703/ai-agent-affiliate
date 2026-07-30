@@ -1,32 +1,215 @@
 ---
 import Base from '../layouts/Base.astro';
+import TaskIcon from '../components/TaskIcon.astro';
+import '../styles/pages.css';
+import '../styles/recommender.css';
+import { getCollection } from 'astro:content';
+import { toEngineTool } from '../lib/tools';
+
+// Build-time: pull the validated tool collection and transform each entry into
+// the shape the client-side scoring engine expects.
+const entries = await getCollection('tools');
+const TOOLS = entries.map(toEngineTool);
+
+const toolCount = entries.length;
+const taskCount = new Set(entries.map((e) => e.data.category)).size;
+const lastVerified = new Date(
+  Math.max(...entries.map((e) => e.data.lastVerified.getTime()))
+).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+
+// The quiz's task options. Order and labels are presentational; `value` must
+// match the canonical TASKS enum in src/content.config.ts.
+const TASK_OPTIONS = [
+  { value: 'writing', label: 'Writing', icon: 'pen-line' },
+  { value: 'email', label: 'Email', icon: 'mail' },
+  { value: 'meetings', label: 'Meetings', icon: 'users' },
+  { value: 'research', label: 'Research', icon: 'search' },
+  { value: 'scheduling', label: 'Scheduling', icon: 'calendar' },
+  { value: 'notes', label: 'Notes', icon: 'notebook-pen' },
+  { value: 'automation', label: 'Automation', icon: 'workflow' },
+  { value: 'coding', label: 'Coding', icon: 'code' },
+  { value: 'design', label: 'Design', icon: 'palette' },
+  { value: 'video', label: 'Video', icon: 'video' },
+  { value: 'marketing', label: 'Marketing', icon: 'megaphone' },
+  { value: 'presentations', label: 'Slides', icon: 'presentation' },
+];
 ---
 
-<Base title="AgentLife — Find the AI tools that fit how you work">
-  <main class="container">
-    <section class="hero">
-      <h1>Find the right AI tools for the way you work</h1>
-      <p class="subtitle">
-        Answer a few quick questions and get matched with the AI tools that
-        actually fit your tasks, your budget, and how hands-off you want to be.
+<Base
+  title="AgentLife — Find the AI tools that fit how you work"
+  description="Answer four questions and get AI tool recommendations matched to your work — with the reasoning shown, and rankings that money can't buy."
+>
+  <main>
+    <!-- HERO -->
+    <section class="page hero-block hero-compact">
+      <p class="eyebrow">Independent AI tool recommendations</p>
+      <h1>Find the AI tools that fit how you actually work</h1>
+      <p class="hero-lead">
+        Answer four questions. We compare every tool that does the job and show
+        you the few worth your time — and exactly why we picked them.
       </p>
-      <a href="/finder" class="button button-primary">Find your tools</a>
+      <ul class="trust-strip trust-strip-tight">
+        <li><strong>{toolCount}</strong> tools compared</li>
+        <li><strong>{taskCount}</strong> kinds of work</li>
+        <li>Re-checked <strong>{lastVerified}</strong></li>
+        <li>Rankings <strong>can't be bought</strong></li>
+      </ul>
+    </section>
+
+    <!-- THE FINDER -->
+    <section class="page finder-section">
+      <div class="finder-wrap">
+        <div id="recommender" class="card recommender-card">
+          <!-- Q1: task -->
+          <div class="form-group">
+            <label class="form-label"
+              ><strong>What do you want AI to take off your plate?</strong></label
+            >
+            <div class="icon-grid" id="task" role="group">
+              {
+                TASK_OPTIONS.map((opt, i) => (
+                  <button
+                    type="button"
+                    class:list={['icon-option', { active: i === 0 }]}
+                    data-value={opt.value}
+                    aria-pressed={i === 0 ? 'true' : 'false'}
+                  >
+                    <TaskIcon name={opt.icon} />
+                    <span>{opt.label}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Q2: control -->
+          <div class="form-group">
+            <label class="form-label" for="control"
+              ><strong>How much control do you want AI to have?</strong></label
+            >
+            <div class="slider-group">
+              <span>Suggestions</span>
+              <input type="range" id="control" min="1" max="4" step="1" value="2" />
+              <span>Fully done</span>
+            </div>
+            <div id="control-label" class="slider-label">Help me decide</div>
+          </div>
+
+          <!-- Q3: ease -->
+          <div class="form-group">
+            <label class="form-label" for="ease"
+              ><strong>How easy do you want your AI tools to be?</strong></label
+            >
+            <div class="slider-group">
+              <span>Simple</span>
+              <input type="range" id="ease" min="1" max="3" step="1" value="1" />
+              <span>Powerful</span>
+            </div>
+            <div id="ease-label" class="slider-label">
+              Simple and easy (works out of the box)
+            </div>
+          </div>
+
+          <!-- Q4: free only -->
+          <div class="form-group">
+            <label class="form-label" for="price"
+              ><strong>Only show free tools?</strong></label
+            >
+            <label class="toggle">
+              <input type="checkbox" id="price" />
+              <span class="toggle-slider"></span>
+            </label>
+            <small class="toggle-hint">Off = include paid tools</small>
+          </div>
+
+          <button id="runBtn" class="button button-primary button-full">
+            Show recommendations
+          </button>
+        </div>
+      </div>
+
+      <div id="results"></div>
+      <div id="upgrade-results"></div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="band band-soft">
+      <div class="page">
+        <div class="band-head"><h2>How it works</h2></div>
+        <div class="steps">
+          <div class="step">
+            <h3>Tell us the job</h3>
+            <p>
+              Pick what you want off your plate, how hands-off you want to be,
+              and how much setup you'll tolerate. Four questions, no sign-up.
+            </p>
+          </div>
+          <div class="step">
+            <h3>We compare the field</h3>
+            <p>
+              Every tool that can genuinely do that job is scored against the
+              same rubric — how good it is, and how much it can handle alone.
+            </p>
+          </div>
+          <div class="step">
+            <h3>You get a short answer</h3>
+            <p>
+              A handful of picks, each with the role it earned and the reason
+              why. If two are too close to separate, we say so.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY TRUST THIS -->
+    <section class="band">
+      <div class="page">
+        <div class="band-head"><h2>Why you can trust it</h2></div>
+        <div class="points">
+          <div class="point">
+            <h3>Money can't move the rankings</h3>
+            <p>
+              Our scoring has no monetization term in it at all. Whether a tool
+              pays us isn't one of the inputs — it can't even break a tie.
+            </p>
+          </div>
+          <div class="point">
+            <h3>No invented precision</h3>
+            <p>
+              We don't publish a &ldquo;93% match&rdquo;. With a handful of good
+              tools per job, that number would imply a certainty we don't have.
+            </p>
+          </div>
+          <div class="point">
+            <h3>Every claim is dated and sourced</h3>
+            <p>
+              Each tool carries the date we last checked it and the sources we
+              used, so you can go and disagree with us.
+            </p>
+          </div>
+          <div class="point">
+            <h3>We leave gaps empty</h3>
+            <p>
+              When nothing earns a spot, we leave it out rather than pad the
+              page. A short answer is usually the honest one.
+            </p>
+          </div>
+        </div>
+
+        <p class="band-foot">
+          <a href="/about">Read the full method &rarr;</a>
+        </p>
+      </div>
     </section>
   </main>
 </Base>
 
-<style>
-  .hero {
-    text-align: center;
-    margin-top: 3rem;
-  }
-  .hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  .subtitle {
-    color: var(--text-muted);
-    max-width: 600px;
-    margin: 0 auto 2rem;
-  }
-</style>
+<!-- Tool data injected from the content collection (read by recommender.js) -->
+<script type="application/json" id="tools-data" set:html={JSON.stringify(TOOLS)}
+></script>
+
+<script>
+  import { initRecommender } from '../scripts/recommender.js';
+  initRecommender();
+</script>

@@ -6,9 +6,11 @@ capability:
 ease: medium
 pricing: freemium
 websiteUrl: "https://www.make.com"
+logo: "/assets/logos/make.png"
 accentColor: "#6d00cc"
 tagline: "Visual automation with serious power for the price"
 bestFor: "Complex automations without Zapier's cost at scale"
+caveat: 'More of a learning curve than Zapier — the visual canvas takes a while to click.'
 features:
   - "Drag-and-drop visual workflow builder"
   - "Far more operations per dollar than Zapier"

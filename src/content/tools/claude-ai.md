@@ -8,9 +8,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://claude.ai"
+logo: "/assets/logos/claude-ai.svg"
 accentColor: "#d97757"
 tagline: "A thoughtful assistant for writing and code"
 bestFor: "Long-form writing, analysis, and coding"
+caveat: 'The free tier limits how much you can use its strongest model, and it covers a narrower range of everyday jobs than ChatGPT.'
 features:
   - "Excellent nuanced, long-form writing"
   - "Among the strongest at coding and reasoning"

@@ -1,6 +1,6 @@
 /* =======================================================
    RECOMMENDER + RESULTS STYLES
-   Imported globally by the /finder page so that the
+   Imported globally by the homepage so that the
    JS-rendered result cards (created via innerHTML) are
    styled too — scoped Astro styles would not reach them.
 ======================================================= */
@@ -36,28 +36,47 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem;
-  border-radius: 10px;
-  border: 1px solid var(--border);
+  gap: 0.45rem;
+  padding: 0.9rem 0.5rem;
+  border-radius: var(--radius-sm);
+  /* Transparent 2px border, so selecting an option doesn't change its size and
+     shift the whole grid. */
+  border: 2px solid transparent;
+  box-shadow: inset 0 0 0 1px var(--border);
   background: var(--card);
+  color: var(--text-muted);
   cursor: pointer;
-  font-size: 1.5rem;
-  transition: all 0.15s ease;
+  font-family: inherit;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Sized here rather than on the SVG, and inheriting `color` — that's what makes
+   a selected option's icon pick up the accent. */
+.icon-option svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.75;
 }
 
 .icon-option span {
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .icon-option:hover {
-  border-color: var(--primary);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
 }
 
 .icon-option.active {
-  border: 2px solid var(--primary);
-  background: rgba(16, 185, 129, 0.08);
+  color: var(--accent);
+  background: var(--accent-tint);
+  box-shadow: inset 0 0 0 2px var(--accent);
 }
 
 /* ============ SLIDER ============ */
@@ -130,57 +149,263 @@
   color: var(--text-muted);
 }
 
-/* ============ RESULTS ============ */
+
+/* =======================================================
+   RESULTS
+   Editorial stack, not a column of identical cards. Each
+   pick earns a named role, so they read as distinct
+   recommendations rather than a leaderboard.
+======================================================= */
 #results,
 #upgrade-results {
   margin-top: 1rem;
 }
 
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.rec-summary {
+  max-width: 760px;
+  margin: 0 auto 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.rec-summary strong {
+  color: var(--text);
+}
+
+.rec-summary a {
+  margin-left: 0.5rem;
+}
+
+.rec-filter {
+  display: inline;
+}
+
+.rec-empty {
+  max-width: 760px;
+  margin: 0 auto;
+  color: var(--text-muted);
+}
+
+/* ============ PICKS ============ */
+.picks {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
   gap: 1.25rem;
-  align-items: stretch;
 }
 
-@media (min-width: 1100px) {
-  .results-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (max-width: 800px) {
-  .results-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.result-card {
-  border: 1px solid var(--border-strong);
-  padding: 1rem;
-  border-radius: 12px;
+.pick {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
   background: var(--card);
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
-.result-card .button {
-  margin-top: auto;
-}
-
-.result-card.featured {
+/* Emphasis via border + tint, NOT transform: scale() — scaling resamples the
+   text and leaves it visibly soft. */
+.pick-primary {
   border: 2px solid var(--primary);
-  background: rgba(16, 185, 129, 0.08);
-  transform: scale(1.03);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lift);
 }
 
-.card-header {
+.pick-role {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.pick-primary .pick-role {
+  background: var(--primary);
+  color: var(--accent-contrast);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.pick-head {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
+.pick-head h3 {
+  font-size: 1.35rem;
+}
+
+.pick-scope {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.pick-tagline {
+  font-weight: 600;
+  margin-top: 0.75rem;
+}
+
+/* ============ REASONS ============ */
+.pick-reasons {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.pick-reasons li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.95rem;
+}
+
+.pick-reasons li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+/* The authored, tool-specific line leads — it is the differentiator. */
+.reason-purpose {
+  font-weight: 600;
+}
+
+.reason-contrast {
+  color: var(--text-muted);
+}
+
+/* The tradeoff. Styled as candour, not as an error. */
+.pick-caveat {
+  margin-top: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--caution);
+  background: var(--caution-bg);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+}
+
+/* ============ PROVENANCE ============ */
+.pick-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.85rem;
+  margin: 1rem 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.pick-sources summary {
+  cursor: pointer;
+}
+
+.pick-sources ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.pick-disclosure {
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+/* Two exits from a pick: off-site (the conversion) and our own write-up (the
+   one that builds trust). The primary action stays visually dominant. */
+.pick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+.rec-ties {
+  max-width: 760px;
+  margin: 1.25rem auto 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ============ RUNNERS-UP ============ */
+.runners {
+  max-width: 760px;
+  margin: 2.5rem auto 0;
+}
+
+.runners-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.runners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.6rem;
+}
+
+.runner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.15s ease;
+}
+
+.runner:hover {
+  border-color: var(--primary);
+}
+
+.runner .tool-logo {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.runner .tool-logo-fallback {
+  font-size: 0.75rem;
+}
+
+.runner-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.runner-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.runner-best {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.runners-more {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ============ LOGOS ============ */
 .tool-logo {
   width: 32px;
   height: 32px;
@@ -197,151 +422,32 @@
   font-size: 0.95rem;
 }
 
-.result-card .price {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
-}
-
-/* ============ ALSO WORTH CONSIDERING (compact chips) ============ */
-.also-considered {
-  margin-top: 2rem;
-}
-
-.also-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-bottom: 0.75rem;
-}
-
-.also-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 0.5rem;
-}
-
-.also-card {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--card);
-  text-decoration: none;
-  color: var(--text);
-  transition: border-color 0.15s ease;
-}
-
-.also-card:hover {
-  border-color: var(--primary);
-}
-
-.also-card .tool-logo {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-}
-
-.also-card .tool-logo-fallback {
-  font-size: 0.75rem;
-}
-
-.also-info {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.also-name {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.also-meta {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.score-bar {
-  width: 100%;
-  height: 8px;
-  background: var(--bg-soft);
-  border-radius: 5px;
-  margin: 10px 0;
-}
-
-.score-fill {
-  height: 100%;
-  background: var(--score-fill);
-  border-radius: 5px;
-}
-
-.tagline {
-  font-weight: 600;
-  margin-top: 0.5rem;
-}
-
-.best-for {
-  color: var(--text-muted);
-  margin-bottom: 0.5rem;
-}
-
-.why-title {
-  margin-top: 0.5rem;
-}
-
-.why-list,
-.features {
-  margin: 0.5rem 0 1rem;
-  padding-left: 1.2rem;
-}
-
-.features li,
-.why-list li {
-  margin-bottom: 0.25rem;
-}
-
-.badges {
-  margin-bottom: 1rem;
-}
-
-.badge {
-  display: inline-block;
-  background: var(--secondary);
-  color: #ffffff;
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  margin-right: 0.3rem;
-}
-
-.featured-badge {
-  display: inline-block;
-  background: var(--primary);
-  color: #022c22;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0.25rem 0.5rem;
-  border-radius: 999px;
-  margin-bottom: 0.5rem;
-  align-self: flex-start;
-}
-
 /* ============ PAID UPGRADE ============ */
 .upgrade-box {
-  border: 2px solid var(--primary);
+  max-width: 760px;
+  margin: 2rem auto 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
   padding: 1.5rem;
-  border-radius: 12px;
-  margin-top: 2rem;
   background: var(--bg-soft);
 }
 
-.upgrade-grid .result-card {
-  opacity: 0.92;
+.upgrade-box h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
-.upgrade-grid .result-card:hover {
-  opacity: 1;
+.upgrade-intro {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 700px) {
+  .pick {
+    padding: 1.15rem;
+  }
+  .runners-grid {
+    grid-template-columns: 1fr;
+  }
 }

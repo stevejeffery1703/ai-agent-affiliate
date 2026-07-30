@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.shortwave.com"
+logo: "/assets/logos/shortwave.png"
 accentColor: "#4f46e5"
 tagline: "A modern, AI-native Gmail experience"
 bestFor: "Gmail users who want AI triage and drafting"
+caveat: 'Gmail only — no use to you on Outlook or anything else.'
 features:
   - "Ghostwriter AI that learns your writing style"
   - "AI-powered search, summaries, and scheduling"

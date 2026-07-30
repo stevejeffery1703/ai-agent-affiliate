@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.heygen.com"
+logo: "/assets/logos/heygen.png"
 accentColor: "#7c3aed"
 tagline: "AI avatar videos in minutes"
 bestFor: "Spokesperson videos in many languages"
+caveat: 'Avatar-led video only — for live-action or cinematic footage you will want a different tool.'
 features:
   - "Realistic AI avatars and voices"
   - "175+ language translation with lip sync"

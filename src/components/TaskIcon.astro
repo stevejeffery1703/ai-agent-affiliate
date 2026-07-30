@@ -1,0 +1,36 @@
+---
+// Inlines a vendored Lucide SVG at build time — no icon font, no runtime
+// request, no external CDN. Inlining (rather than <img src>) is what lets the
+// icon inherit currentColor, so a selected option's icon picks up --accent.
+const icons = import.meta.glob<string>('../icons/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+interface Props {
+  /** File name without extension, e.g. "pen-line". */
+  name: string;
+}
+const { name } = Astro.props;
+
+const raw = icons[`../icons/${name}.svg`];
+if (!raw) {
+  throw new Error(
+    `TaskIcon: no icon named "${name}" in src/icons/. Available: ` +
+      Object.keys(icons)
+        .map((k) => k.replace('../icons/', '').replace('.svg', ''))
+        .join(', ')
+  );
+}
+
+// Strip the fixed width/height so CSS controls the size, and drop the license
+// comment from the emitted markup (attribution lives in src/icons/README.md).
+const svg = raw
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/\s(width|height)="24"/g, '')
+  .replace('<svg', '<svg aria-hidden="true" focusable="false"')
+  .trim();
+---
+
+<Fragment set:html={svg} />

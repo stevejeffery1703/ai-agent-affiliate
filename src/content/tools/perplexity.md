@@ -7,9 +7,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.perplexity.ai"
+logo: "/assets/logos/perplexity.png"
 accentColor: "#20808d"
 tagline: "The answer engine for cited, real-time research"
 bestFor: "Current, well-sourced answers"
+caveat: 'The free tier limits how many Deep Research runs you get, and it is a research tool rather than a general assistant.'
 features:
   - "Cited answers pulled from the live web"
   - "Deep Research reports in a few minutes"

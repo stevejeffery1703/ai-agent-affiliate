@@ -1,29 +1,143 @@
 ---
 import Base from '../../layouts/Base.astro';
+import TaskIcon from '../../components/TaskIcon.astro';
+import '../../styles/pages.css';
+import '../../styles/tools.css';
+import { getCollection } from 'astro:content';
+
+const tools = (await getCollection('tools')).sort((a, b) =>
+  a.data.name.localeCompare(b.data.name)
+);
+
+// Filters are driven by what tools can actually DO (their capability keys), not
+// just their headline category — that's what the finder matches on, so browsing
+// and searching stay consistent.
+const TASK_META = [
+  { value: 'writing', label: 'Writing', icon: 'pen-line' },
+  { value: 'email', label: 'Email', icon: 'mail' },
+  { value: 'meetings', label: 'Meetings', icon: 'users' },
+  { value: 'research', label: 'Research', icon: 'search' },
+  { value: 'scheduling', label: 'Scheduling', icon: 'calendar' },
+  { value: 'notes', label: 'Notes', icon: 'notebook-pen' },
+  { value: 'automation', label: 'Automation', icon: 'workflow' },
+  { value: 'coding', label: 'Coding', icon: 'code' },
+  { value: 'design', label: 'Design', icon: 'palette' },
+  { value: 'video', label: 'Video', icon: 'video' },
+  { value: 'marketing', label: 'Marketing', icon: 'megaphone' },
+  { value: 'presentations', label: 'Slides', icon: 'presentation' },
+];
+
+const rows = tools.map((t) => ({
+  id: t.id,
+  data: t.data,
+  tasks: Object.entries(t.data.capability)
+    .filter(([, v]) => v)
+    .map(([k]) => k),
+}));
+
+const counts = Object.fromEntries(
+  TASK_META.map((t) => [t.value, rows.filter((r) => r.tasks.includes(t.value)).length])
+);
+
+const PRICING = {
+  free: 'Free',
+  freemium: 'Free plan',
+  trial: 'Free trial',
+  paid: 'Paid',
+};
 ---
 
 <Base
-  title="AI Agent Tools | AgentLife"
-  description="Coming soon: our curated directory of AI agent tools for busy people."
+  title="All AI tools we've reviewed | AgentLife"
+  description="Every AI tool in our database, scored on the same rubric and re-checked monthly. Filter by the kind of work you need done."
 >
-  <main class="container">
-    <section class="placeholder">
-      <h1>AI Agent Tools</h1>
-      <p class="muted">
-        Our curated, regularly updated tool directory is coming soon.
+  <main class="page">
+    <div class="dir-head">
+      <p class="eyebrow" style="padding-top:2rem">The full list</p>
+      <h1>Every tool we've reviewed</h1>
+      <p>
+        All {tools.length} tools, scored against the same rubric and re-checked monthly.
+        If you'd rather be pointed straight at the right one,
+        <a href="/">use the finder</a>.
       </p>
-      <a href="/" class="button button-secondary">Back to home</a>
-    </section>
+    </div>
+
+    <div class="dir-filters" role="group" aria-label="Filter by kind of work">
+      <button type="button" class="filter-chip" data-task="all" aria-pressed="true">
+        All {tools.length}
+      </button>
+      {
+        TASK_META.filter((t) => counts[t.value] > 0).map((t) => (
+          <button type="button" class="filter-chip" data-task={t.value} aria-pressed="false">
+            <TaskIcon name={t.icon} />
+            {t.label} {counts[t.value]}
+          </button>
+        ))
+      }
+    </div>
+
+    <p class="dir-count" id="dir-count">Showing all {tools.length} tools</p>
+
+    <div class="dir-grid" id="dir-grid">
+      {
+        rows.map((r) => (
+          <a class="dir-card" href={`/tools/${r.id}`} data-tasks={r.tasks.join(' ')}>
+            <span class="dir-card-head">
+              {r.data.logo ? (
+                <img src={r.data.logo} alt="" width="28" height="28" />
+              ) : (
+                <span
+                  class="tool-logo-fallback"
+                  style={`background:${r.data.accentColor || '#15603d'}`}
+                >
+                  {r.data.name.trim().charAt(0).toUpperCase()}
+                </span>
+              )}
+              <h2>{r.data.name}</h2>
+            </span>
+            <p>{r.data.bestFor}</p>
+            <span class="dir-card-foot">
+              <span class="tag">{PRICING[r.data.pricing]}</span>
+              {r.tasks.slice(0, 3).map((t) => (
+                <span class="tag">{t}</span>
+              ))}
+            </span>
+          </a>
+        ))
+      }
+    </div>
+
+    <p class="dir-empty" id="dir-empty" hidden>No tools match that filter yet.</p>
   </main>
 </Base>
 
-<style>
-  .placeholder {
-    text-align: center;
-    margin-top: 4rem;
-  }
-  .muted {
-    color: var(--text-muted);
-    margin-bottom: 2rem;
-  }
-</style>
+<script>
+  // Progressive enhancement: every card is in the HTML and linked, so the page
+  // works fully without this. The filter only hides rows.
+  const chips = document.querySelectorAll<HTMLButtonElement>('.filter-chip');
+  const cards = document.querySelectorAll<HTMLAnchorElement>('.dir-card[data-tasks]');
+  const count = document.getElementById('dir-count');
+  const empty = document.getElementById('dir-empty');
+  const total = cards.length;
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const task = chip.dataset.task;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+
+      let shown = 0;
+      cards.forEach((card) => {
+        const match = task === 'all' || (card.dataset.tasks || '').split(' ').includes(task!);
+        card.hidden = !match;
+        if (match) shown++;
+      });
+
+      const label = chip.textContent?.trim().replace(/\s+\d+$/, '') ?? '';
+      count!.textContent =
+        task === 'all'
+          ? `Showing all ${total} tools`
+          : `Showing ${shown} ${shown === 1 ? 'tool' : 'tools'} for ${label.toLowerCase()}`;
+      empty!.hidden = shown > 0;
+    });
+  });
+</script>

@@ -1,0 +1,130 @@
+---
+import { getCollection } from 'astro:content';
+
+// The disclosure counts itself from the collection at build time, so it can
+// never drift out of step with reality. When the first affiliate link is added
+// the wording flips on its own — nobody has to remember to update this copy.
+// (An earlier hand-written version claimed a ranking "nudge" that no longer
+// existed, which is exactly the failure this design prevents.)
+const tools = await getCollection('tools');
+const total = tools.length;
+const withAffiliate = tools.filter((t) => t.data.affiliateUrl).length;
+
+interface Props {
+  /** One-line version for the footer. */
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+{
+  compact ? (
+    <p class="disclosure-compact">
+      {withAffiliate === 0 ? (
+        <>
+          We currently earn <strong>no commission</strong> from any link on this
+          site — all {total} tools are listed purely on merit.
+        </>
+      ) : (
+        <>
+          {withAffiliate} of our {total} tools use an affiliate link. Each is
+          labelled, and commission <strong>never</strong> affects ranking.
+        </>
+      )}{' '}
+      <a href="/about#money">How we make money</a>.
+    </p>
+  ) : (
+    <div class="disclosure" id="money">
+      <h2>How we make money</h2>
+
+      <p class="disclosure-state">
+        {withAffiliate === 0 ? (
+          <>
+            <strong>Right now, we earn nothing from this site.</strong> Not one
+            of the {total} tools we list pays us a penny — we aren't in a single
+            affiliate programme yet. Everything here is ranked purely on merit.
+            This paragraph is generated from the tool data itself, so the day
+            that changes, it will tell you exactly how many links earn us
+            something.
+          </>
+        ) : (
+          <>
+            <strong>
+              {withAffiliate} of the {total} tools we list use an affiliate
+              link
+            </strong>{' '}
+            — meaning if you sign up through it, we may earn a commission. Every
+            one is labelled <span class="disclosure-tag">affiliate link</span>{' '}
+            right where you click it, so you never have to guess which is which.
+          </>
+        )}
+      </p>
+
+      <ul class="disclosure-points">
+        <li>
+          <strong>It never affects ranking.</strong> Our scoring engine has no
+          monetization term in it at all. Whether a tool pays us simply isn't one
+          of the inputs, so it can't move a result up or down — it can't even
+          break a tie.
+        </li>
+        <li>
+          <strong>It never costs you more.</strong> An affiliate link is the same
+          price as going direct. Where one carries a genuine discount, we'll say
+          so on that specific tool — we won't imply a deal that isn't there.
+        </li>
+        <li>
+          <strong>We recommend tools that pay us nothing.</strong> Whether a tool
+          runs an affiliate programme is never a reason to include it — or to
+          leave a better one out.
+        </li>
+        <li>
+          <strong>You can check us.</strong> Every tool shows when we last
+          verified it and the sources we used. If a recommendation looks wrong,
+          the evidence is right there to argue with.
+        </li>
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  .disclosure {
+    scroll-margin-top: 2rem;
+  }
+  .disclosure-state {
+    margin-bottom: 1rem;
+  }
+  .disclosure-points {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .disclosure-points li {
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .disclosure-points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .disclosure-tag {
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    padding: 0.05rem 0.45rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .disclosure-compact {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+</style>

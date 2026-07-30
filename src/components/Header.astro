@@ -1,8 +1,9 @@
 ---
+// The finder is the homepage, so the brand link covers it — a separate "Home"
+// and "Find Tools" would both point at `/`.
 const links = [
-  { href: '/', label: 'Home' },
-  { href: '/finder', label: 'Find Tools' },
-  { href: '/tools', label: 'Tools' },
+  { href: '/tools', label: 'All tools' },
+  { href: '/about', label: 'How we choose' },
 ];
 const path = Astro.url.pathname;
 ---

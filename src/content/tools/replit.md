@@ -6,9 +6,11 @@ capability:
 ease: medium
 pricing: freemium
 websiteUrl: "https://replit.com"
+logo: "/assets/logos/replit.png"
 accentColor: "#f26207"
 tagline: "Describe an app and Replit builds it"
 bestFor: "Non-developers building apps from a description"
+caveat: 'Great for getting an idea working quickly — less suited to large, production-grade codebases.'
 features:
   - "AI agent builds and deploys full apps"
   - "No local setup — everything in the browser"

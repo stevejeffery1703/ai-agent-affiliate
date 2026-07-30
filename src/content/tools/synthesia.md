@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.synthesia.io"
+logo: "/assets/logos/synthesia.png"
 accentColor: "#0f172a"
 tagline: "Studio-quality AI videos from text"
 bestFor: "Training and explainer videos with avatars"
+caveat: 'Avatar-led video only, and the free tier is limited — enough to test with, not to produce with.'
 features:
   - "230+ AI avatars across 140+ languages"
   - "Turn documents and slides into videos"

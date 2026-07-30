@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://tldv.io"
+logo: "/assets/logos/tldv.svg"
 accentColor: "#ec4899"
 tagline: "Free-first meeting recorder and notes"
 bestFor: "Solo users who want a generous free notetaker"
+caveat: 'Strongest on price rather than quality — Fathom and Granola both rate higher for their summaries.'
 features:
   - "Records, transcribes, and summarizes calls"
   - "Clip and share meeting highlights"

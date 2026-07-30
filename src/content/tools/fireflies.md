@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://fireflies.ai"
+logo: "/assets/logos/fireflies.png"
 accentColor: "#8b5cf6"
 tagline: "An AI notetaker that joins your calls"
 bestFor: "Teams that want a searchable record of every meeting"
+caveat: 'It joins calls as a visible bot, and its real payoff only arrives once you have built up an archive worth searching.'
 features:
   - "Records and transcribes across meeting platforms"
   - "Builds a searchable knowledge base of your calls"

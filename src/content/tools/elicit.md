@@ -6,9 +6,11 @@ capability:
 ease: medium
 pricing: freemium
 websiteUrl: "https://elicit.com"
+logo: "/assets/logos/elicit.png"
 accentColor: "#4f46e5"
 tagline: "AI for systematic literature review"
 bestFor: "Researchers reviewing academic papers"
+caveat: 'Overkill for casual questions. It is built for full literature reviews, and takes some learning before it pays off.'
 features:
   - "Finds and summarizes research papers"
   - "Extracts and compares data across studies"

@@ -6,9 +6,11 @@ capability:
 ease: advanced
 pricing: freemium
 websiteUrl: "https://n8n.io"
+logo: "/assets/logos/n8n.png"
 accentColor: "#ea4b71"
 tagline: "Open-source automation for technical teams"
 bestFor: "Developers who want control and self-hosting"
+caveat: 'Built for technical users — overkill if you just want to connect two apps, and self-hosting is real work.'
 features:
   - "Open-source and self-hostable"
   - "No-code when you want it, code when you need it"

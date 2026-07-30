@@ -7,9 +7,11 @@ capability:
 ease: easy
 pricing: paid
 websiteUrl: "https://www.fyxer.com"
+logo: "/assets/logos/fyxer.png"
 accentColor: "#2563eb"
 tagline: "An AI assistant for your inbox"
 bestFor: "Outlook and Gmail users who want drafted replies"
+caveat: 'No free tier, and it only works inside Gmail or Outlook.'
 features:
   - "Organizes your inbox automatically"
   - "Drafts replies in your writing style"

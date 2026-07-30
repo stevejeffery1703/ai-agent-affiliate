@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://ideogram.ai"
+logo: "/assets/logos/ideogram.svg"
 accentColor: "#5b21b6"
 tagline: "AI images that get the text right"
 bestFor: "Designs and images with legible text"
+caveat: 'Best in class for text inside an image, but general image quality still trails Midjourney.'
 features:
   - "Reliably renders readable text in images"
   - "Great for logos, posters, and typography"

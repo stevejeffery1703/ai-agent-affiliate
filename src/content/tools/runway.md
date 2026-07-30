@@ -6,9 +6,11 @@ capability:
 ease: medium
 pricing: freemium
 websiteUrl: "https://runwayml.com"
+logo: "/assets/logos/runway.png"
 accentColor: "#111111"
 tagline: "Cinematic AI video generation"
 bestFor: "Creative, generative video and effects"
+caveat: 'Aimed at generative, cinematic clips — not the tool for straightforward talking-head or avatar video.'
 features:
   - "Text- and image-to-video generation"
   - "Pro-grade editing and visual effects"

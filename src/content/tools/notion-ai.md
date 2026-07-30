@@ -7,9 +7,11 @@ capability:
 ease: medium
 pricing: freemium
 websiteUrl: "https://www.notion.com"
+logo: "/assets/logos/notion-ai.png"
 accentColor: "#000000"
 tagline: "Your workspace, now with AI"
 bestFor: "Teams with connected docs, notes, and projects"
+caveat: 'Only worth it if your team already works in Notion; it is not a reason to move there.'
 features:
   - "Ask questions across your whole workspace"
   - "AI writing and summaries in every doc"

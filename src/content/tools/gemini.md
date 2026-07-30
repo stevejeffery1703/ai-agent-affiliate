@@ -7,9 +7,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://gemini.google.com"
+logo: "/assets/logos/gemini.png"
 accentColor: "#1a73e8"
 tagline: "Google's AI, built into your workflow"
 bestFor: "Google users who want AI across Docs, Gmail, and search"
+caveat: 'Its edge is mostly ecosystem: outside Google’s apps there is less reason to pick it over ChatGPT or Claude.'
 features:
   - "Deep integration with Google Workspace"
   - "Strong research backed by Google Search"

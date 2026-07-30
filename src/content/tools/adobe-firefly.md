@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.adobe.com/products/firefly.html"
+logo: "/assets/logos/adobe-firefly.png"
 accentColor: "#fa0f00"
 tagline: "Commercially-safe AI images"
 bestFor: "Client and commercial work that needs clean rights"
+caveat: 'Its images are safer than they are striking — for raw quality Midjourney still leads, and the free tier is credit-limited.'
 features:
   - "Full commercial copyright indemnification"
   - "Built into Photoshop and Adobe Express"

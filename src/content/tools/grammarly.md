@@ -6,9 +6,11 @@ capability:
 ease: easy
 pricing: freemium
 websiteUrl: "https://www.grammarly.com"
+logo: "/assets/logos/grammarly.png"
 accentColor: "#15c39a"
 tagline: "Polish everything you write"
 bestFor: "Editing and proofreading your own drafts"
+caveat: 'It sharpens writing you have already done — it will not draft from scratch the way a general assistant will.'
 features:
   - "Real-time grammar, clarity, and tone fixes"
   - "Works across email, docs, and the web"
