@@ -91,6 +91,6 @@ leave it for review.
 
 ## Deploying
 
-Merges to `main` deploy automatically via GitHub Actions
-(`.github/workflows/deploy.yml`). Locally you can still run
-`npm run build && npx wrangler deploy`.
+Deploy straight to Cloudflare with `bash deploy.sh` (builds, then
+`wrangler deploy`). GitHub is separate — `git push` to back up / sync the repo
+when you want; it does not auto-deploy.
