@@ -4,6 +4,14 @@
   "name": "ai-agent-affiliate",
   "compatibility_date": "2026-04-11",
 
+  // Build the site before deploying. `dist/` is gitignored, so a Cloudflare
+  // Git-connected build clones the repo without it and `wrangler deploy` used
+  // to fail with "assets.directory ... does not exist". Putting the build here
+  // rather than in the dashboard keeps deploys working from anywhere.
+  "build": {
+    "command": "npm run build"
+  },
+
   // Astro builds the static site into ./dist; Cloudflare serves it as assets.
   "assets": {
     "directory": "./dist",
