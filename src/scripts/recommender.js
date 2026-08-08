@@ -127,9 +127,13 @@ function logoHTML(tool) {
 // Provenance: when we last checked, and what we checked against. This is the
 // site's whole claim to independence, so it belongs on the card, not just on
 // the About page.
-function provenanceHTML(tool) {
-  const sources = tool.sources?.length
-    ? `<details class="pick-sources">
+// Sources are the primary pick's provenance signal — repeating the full list
+// on two more cards is noise, not trust-building, when "Read our take" already
+// links to the same sourcing on the tool's own page.
+function provenanceHTML(tool, isPrimary) {
+  const sources =
+    isPrimary && tool.sources?.length
+      ? `<details class="pick-sources">
          <summary>${tool.sources.length} source${tool.sources.length > 1 ? 's' : ''}</summary>
          <ul>${tool.sources
            .map(
@@ -140,7 +144,7 @@ function provenanceHTML(tool) {
            )
            .join('')}</ul>
        </details>`
-    : '';
+      : '';
   const affiliate = tool.isAffiliate
     ? '<span class="pick-disclosure" title="We may earn a commission. It does not affect ranking.">affiliate link</span>'
     : '';
@@ -178,7 +182,7 @@ function pickHTML(entry, ranked, user, isPrimary, shownIds) {
       ${scope}
       <p class="pick-tagline">${esc(tool.tagline)}</p>
       ${reasonsHTML(buildReasons(entry, ranked, user, shownIds))}
-      ${provenanceHTML(tool)}
+      ${provenanceHTML(tool, isPrimary)}
       <div class="pick-actions">
         <a href="${esc(tool.url)}" target="_blank" rel="sponsored noopener" class="button button-primary">
           Visit ${esc(tool.name)}
@@ -207,12 +211,9 @@ function renderResults(user) {
     return;
   }
 
-  const { roles, ties } = assignRoles(ranked, user);
-  const shown = new Set(roles.map((r) => r.tool.id));
-  const runners = ranked.filter((t) => !shown.has(t.id));
-  // Anything already visible as a pick or a named tie shouldn't be re-offered
-  // as the "pick this instead" contrast.
-  const shownIds = new Set([...shown, ...ties.map((t) => t.id)]);
+  const { roles } = assignRoles(ranked, user);
+  const shownIds = new Set(roles.map((r) => r.tool.id));
+  const runners = ranked.filter((t) => !shownIds.has(t.id));
 
   // Honest framing of the shortlist: what we looked at, and what got filtered.
   const filtered =
@@ -220,10 +221,14 @@ function renderResults(user) {
       ? ` <span class="rec-filter">${eligibleN} of them have a free plan.</span>`
       : '';
 
-  const tiesHTML = ties.length
-    ? `<p class="rec-ties">Too close to call between our pick and
-         ${ties.map((t) => esc(t.name)).join(' and ')} — any of them would serve you well.</p>`
-    : '';
+  // Names why there's more than one card, so the row doesn't read as "one
+  // verdict plus two also-rans" — each card earned its slot a different way.
+  const leadHTML =
+    roles.length > 1
+      ? `<p class="picks-lead">Ranked for ${esc(
+          user.task
+        )} — pick the one that fits what you need most.</p>`
+      : '';
 
   const runnersHTML = runners.length
     ? `<div class="runners">
@@ -260,10 +265,10 @@ function renderResults(user) {
   // The "we compared N" line reads as a footnote to the answer, not a preamble
   // to it — so it sits after the results rather than delaying them.
   container.innerHTML = `
-    <div class="picks">
+    ${leadHTML}
+    <div class="picks" data-count="${roles.length}">
       ${roles.map((r, i) => pickHTML(r, ranked, user, i === 0, shownIds)).join('')}
     </div>
-    ${tiesHTML}
     ${runnersHTML}
     <p class="rec-summary">
       We compared <strong>${capableN}</strong> tools that do ${esc(user.task)}.${filtered}

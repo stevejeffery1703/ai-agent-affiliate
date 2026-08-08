@@ -199,7 +199,7 @@
 
 /* A footnote under the answer, not a preamble above it. */
 .rec-summary {
-  max-width: 760px;
+  max-width: 1040px;
   margin: 2rem auto 0;
   padding-top: 1rem;
   border-top: 1px solid var(--border);
@@ -220,18 +220,48 @@
 }
 
 .rec-empty {
-  max-width: 760px;
+  max-width: 1040px;
   margin: 0 auto;
   color: var(--text-muted);
 }
 
-/* ============ PICKS ============ */
+/* A one-line reason the row has more than one card, so it reads as "three
+   ways to go" rather than "a verdict plus two also-rans". Only rendered when
+   there's more than one card to explain. */
+.picks-lead {
+  max-width: 1040px;
+  margin: 0 auto 1rem;
+  font-family: var(--font-display, Georgia, serif);
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* ============ PICKS ============
+   Guaranteed up to three cards. The results column tops out around 710px
+   (the page is 1080px max-width, minus the rail) — too narrow for three full
+   cards side by side without squeezing each to a sliver, so the primary pick
+   gets its own full-width row and the two alternates share the row below it.
+   That reads as "the answer, then two ways to go instead of it" rather than
+   a three-way tie for attention. */
 .picks {
-  max-width: 760px;
+  max-width: 1040px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  align-items: stretch;
   gap: 1.25rem;
+  grid-template-columns: 1fr;
+}
+
+.picks[data-count='2'] {
+  grid-template-columns: 1.15fr 1fr;
+}
+
+.picks[data-count='3'] {
+  grid-template-columns: 1fr 1fr;
+}
+
+.picks[data-count='3'] .pick-primary {
+  grid-column: 1 / -1;
 }
 
 .pick {
@@ -242,6 +272,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  min-width: 0; /* let grid shrink a card below its content's natural width */
 }
 
 /* Emphasis via border + tint, NOT transform: scale() — scaling resamples the
@@ -249,6 +280,21 @@
 .pick-primary {
   border: 2px solid var(--primary);
   box-shadow: var(--shadow-lift);
+}
+
+/* Alternates carry one reason instead of two and no sources dropdown (see
+   provenanceHTML) — the length cut itself signals "secondary", on top of the
+   missing border. */
+.pick:not(.pick-primary) {
+  padding: 1.2rem 1.3rem;
+}
+
+.pick:not(.pick-primary) .pick-head h3 {
+  font-size: 1.15rem;
+}
+
+.pick:not(.pick-primary) .pick-tagline {
+  font-size: 0.9rem;
 }
 
 .pick-role {
@@ -383,16 +429,9 @@
   margin-top: 0.25rem;
 }
 
-.rec-ties {
-  max-width: 760px;
-  margin: 1.25rem auto 0;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
 /* ============ RUNNERS-UP ============ */
 .runners {
-  max-width: 760px;
+  max-width: 1040px;
   margin: 2.5rem auto 0;
 }
 
@@ -477,7 +516,7 @@
 
 /* ============ PAID UPGRADE ============ */
 .upgrade-box {
-  max-width: 760px;
+  max-width: 1040px;
   margin: 2rem auto 0;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius);
@@ -496,9 +535,18 @@
   margin-bottom: 1.25rem;
 }
 
+/* Below this, even a two-up row leaves too little room for a card's reasons
+   and CTA to sit comfortably — stack instead of squeezing. */
 @media (max-width: 700px) {
   .pick {
     padding: 1.15rem;
+  }
+  .picks[data-count='2'],
+  .picks[data-count='3'] {
+    grid-template-columns: 1fr;
+  }
+  .picks[data-count='3'] .pick-primary {
+    grid-column: auto;
   }
   .runners-grid {
     grid-template-columns: 1fr;

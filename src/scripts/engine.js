@@ -94,12 +94,23 @@ function tieWindow(n) {
   return Math.max(0.006, 0.015 - 0.0004 * Math.max(0, n - 5));
 }
 
+// The page always shows this many cards (when the shortlist is that deep):
+// one primary plus two alternates, so the layout — and the promise "pick the
+// one that fits you" — doesn't depend on how the data happens to fall out for
+// a given query.
+const CARD_COUNT = 3;
+
 /**
- * Award roles. Each is earned on a named dimension by a DISTINCT tool, and is
- * skipped entirely when nothing earns it.
+ * Award roles. "Our pick" always leads. The other slots go, in priority
+ * order, to: a genuine co-leader (statistically tied, so it's a real
+ * alternative rather than a footnote), then tools that earned a distinct
+ * dimension (free / easy / hands-off), then — only if slots are still open —
+ * the next-best-ranked tool, so the row is never padded with less than the
+ * data actually supports but is also never thinner than three when there's
+ * enough of a shortlist to fill it.
  */
 export function assignRoles(ranked, user) {
-  if (!ranked.length) return { roles: [], ties: [] };
+  if (!ranked.length) return { roles: [] };
 
   const roles = [];
   const taken = new Set();
@@ -108,28 +119,36 @@ export function assignRoles(ranked, user) {
   roles.push({ tool: top, role: 'Our pick', basis: 'overall' });
   taken.add(top.id);
 
-  // Co-leaders, named rather than silently ranked below the pick.
-  const ties = ranked
-    .slice(1)
-    .filter((t) => top.score - t.score < tieWindow(ranked.length))
-    .slice(0, 2);
+  const fill = (candidates) => {
+    for (const c of candidates) {
+      if (roles.length >= CARD_COUNT) return;
+      if (taken.has(c.tool.id)) continue;
+      roles.push(c);
+      taken.add(c.tool.id);
+    }
+  };
+
+  // Co-leaders first: a tool within a rounding error of the top score is a
+  // stronger claim on a slot than any earned dimension.
+  fill(
+    ranked
+      .slice(1)
+      .filter((t) => top.score - t.score < tieWindow(ranked.length))
+      .map((t) => ({ tool: t, role: 'Also a top pick', basis: 'tie' }))
+  );
+
+  const earned = [];
 
   // Only meaningful when our pick ISN'T already free — otherwise it's padding.
   if (!user.freeOnly && !top.isFree) {
     const free = ranked.find((t) => t.isFree && !taken.has(t.id));
-    if (free) {
-      roles.push({ tool: free, role: 'Best free option', basis: 'free' });
-      taken.add(free.id);
-    }
+    if (free) earned.push({ tool: free, role: 'Best free option', basis: 'free' });
   }
 
   // Only when our pick isn't already the easiest tier.
   if (EASE_RANK[top.ease] > 0) {
     const easier = ranked.find((t) => EASE_RANK[t.ease] < EASE_RANK[top.ease] && !taken.has(t.id));
-    if (easier) {
-      roles.push({ tool: easier, role: 'Easiest to start with', basis: 'ease' });
-      taken.add(easier.id);
-    }
+    if (easier) earned.push({ tool: easier, role: 'Easiest to start with', basis: 'ease' });
   }
 
   // Only when something genuinely runs further unsupervised than our pick.
@@ -142,11 +161,21 @@ export function assignRoles(ranked, user) {
         (AUTONOMY_RANK[a.rubric?.[user.task]?.autonomy] ?? 0)
     )[0];
   if (handsOff && (AUTONOMY_RANK[handsOff.rubric?.[user.task]?.autonomy] ?? 0) > topAutonomy) {
-    roles.push({ tool: handsOff, role: 'Most hands-off', basis: 'autonomy' });
-    taken.add(handsOff.id);
+    earned.push({ tool: handsOff, role: 'Most hands-off', basis: 'autonomy' });
   }
 
-  return { roles, ties };
+  fill(earned);
+
+  // Still short a slot: nothing distinct separates the next tool from our
+  // pick, so say that plainly instead of inventing a role it didn't earn.
+  fill(
+    ranked
+      .slice(1)
+      .filter((t) => !taken.has(t.id))
+      .map((t) => ({ tool: t, role: 'Also worth a look', basis: 'alternate' }))
+  );
+
+  return { roles };
 }
 
 // A generalist's bestFor ("Writing, research, and everyday AI help") makes a
@@ -162,9 +191,9 @@ function isSpecialist(tool) {
  * judgement, owned as ours) -> what to pick instead (computed contrast) -> the
  * tradeoff (authored).
  *
- * `shownIds` are tools already on the page under their own role or named as a
- * tie. The contrast exists to surface an alternative the reader would otherwise
- * miss, so pointing at a card they can already see is just noise.
+ * `shownIds` are tools already on the page under their own role card. The
+ * contrast exists to surface an alternative the reader would otherwise miss,
+ * so pointing at a card they can already see is just noise.
  */
 export function buildReasons(entry, ranked, user, shownIds = new Set()) {
   const { tool, basis } = entry;
@@ -207,6 +236,19 @@ export function buildReasons(entry, ranked, user, shownIds = new Set()) {
   }
   if (basis === 'autonomy') {
     out.push({ kind: 'judgement', text: 'Runs further unsupervised than our pick.' });
+  }
+  if (basis === 'tie') {
+    out.push({
+      kind: 'judgement',
+      text: "Scored within a hair of our pick in this comparison — a genuine tie, not a runner-up.",
+    });
+  }
+  if (basis === 'alternate') {
+    const rank = ranked.findIndex((t) => t.id === tool.id) + 1;
+    out.push({
+      kind: 'judgement',
+      text: `Ranked #${rank} for ${user.task} in our comparison — close behind our pick, without a standout tradeoff either way.`,
+    });
   }
 
   // 4. The tradeoff. Rendered distinctly — it's the honesty signal, not filler.
